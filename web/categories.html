@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AuctionTT | Categories</title>
+  <meta name="description" content="Browse AuctionTT categories for local Trinidad and Tobago deals and auctions. Demo content is clearly marked." />
+  <meta property="og:title" content="AuctionTT | Categories" />
+  <meta property="og:description" content="Filter categories and discover local deals across Trinidad and Tobago on AuctionTT." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Public+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./index.html">AuctionTT</a>
+    <nav>
+      <a href="./index.html">Home</a>
+      <a href="./categories.html" class="active">Categories</a>
+      <a href="./sell.html">Sell</a>
+      <a href="./feedback.html">Feedback</a>
+      <a data-auth-pill href="./signin.html">Sign In</a>
+      <button data-logout class="btn ghost btn-sm" style="display:none">Logout</button>
+    </nav>
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+  <div class="nav-mobile" id="nav-mobile">
+    <a href="./index.html">Home</a>
+    <a href="./categories.html">Categories</a>
+    <a href="./sell.html">Sell</a>
+    <a href="./feedback.html">Feedback</a>
+    <div class="nav-mobile-divider"></div>
+    <a data-auth-pill-mobile href="./signin.html">Sign In</a>
+    <button data-logout-mobile class="btn ghost" style="display:none">Logout</button>
+  </div>
+
+  <main class="page-main">
+    <section class="page-intro">
+      <h1>All Categories</h1>
+      <p>Type to filter AuctionTT category names.</p>
+      <input id="category-filter-input" type="text" placeholder="Search category names..." />
+      <p id="category-count" class="subtle"></p>
+    </section>
+
+    <section id="category-grid" class="category-grid"></section>
+  </main>
+
+  <script src="./js/api.js"></script>
+  <script src="./js/common.js"></script>
+  <script src="./js/categories.js"></script>
+</body>
+</html>

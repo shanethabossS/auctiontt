@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AuctionTT | Sign In</title>
+  <meta name="description" content="Sign in to AuctionTT to bid, watch listings, and manage local seller submissions in Trinidad and Tobago." />
+  <meta property="og:title" content="AuctionTT | Sign In" />
+  <meta property="og:description" content="Access AuctionTT accounts for buyers and verified sellers." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Public+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./index.html">AuctionTT</a>
+    <nav>
+      <a href="./index.html">Home</a>
+      <a href="./categories.html">Categories</a>
+      <a href="./sell.html">Sell</a>
+      <a href="./feedback.html">Feedback</a>
+      <a data-auth-pill href="./signin.html" class="active">Sign In</a>
+      <button data-logout class="btn ghost btn-sm" style="display:none">Logout</button>
+    </nav>
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+  <div class="nav-mobile" id="nav-mobile">
+    <a href="./index.html">Home</a>
+    <a href="./categories.html">Categories</a>
+    <a href="./sell.html">Sell</a>
+    <a href="./feedback.html">Feedback</a>
+    <div class="nav-mobile-divider"></div>
+    <a data-auth-pill-mobile href="./signin.html">Sign In</a>
+    <button data-logout-mobile class="btn ghost" style="display:none">Logout</button>
+  </div>
+
+  <main class="page-main auth-grid">
+    <section class="card">
+      <h2>Sign In</h2>
+      <form id="signin-form" class="stack-form">
+        <input name="email" type="email" placeholder="Email" required />
+        <input name="password" type="password" placeholder="Password" required />
+        <button class="btn" type="submit">Sign In</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Create Account</h2>
+      <form id="signup-form" class="stack-form">
+        <input name="full_name" type="text" placeholder="Full name" required />
+        <input name="email" type="email" placeholder="Email" required />
+        <input name="password" type="password" placeholder="Password" required />
+        <select name="role">
+          <option value="buyer">Buyer</option>
+          <option value="seller">Seller</option>
+        </select>
+        <button class="btn" type="submit">Create Account</button>
+      </form>
+    </section>
+
+    <p id="auth-message" class="subtle"></p>
+  </main>
+
+  <script src="./js/api.js"></script>
+  <script src="./js/common.js"></script>
+  <script src="./js/signin.js"></script>
+</body>
+</html>

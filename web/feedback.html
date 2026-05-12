@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AuctionTT | Feedback</title>
+  <meta name="description" content="Submit feedback for AuctionTT: bug reports, suggestions, listing reports, verification issues, payment concerns, and more." />
+  <meta property="og:title" content="AuctionTT | Feedback Portal" />
+  <meta property="og:description" content="Share platform feedback and help improve AuctionTT before full public rollout." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Public+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./index.html">AuctionTT</a>
+    <nav>
+      <a href="./index.html">Home</a>
+      <a href="./categories.html">Categories</a>
+      <a href="./sell.html">Sell</a>
+      <a href="./feedback.html" class="active">Feedback</a>
+      <a data-auth-pill href="./signin.html">Sign In</a>
+      <button data-logout class="btn ghost btn-sm" style="display:none">Logout</button>
+    </nav>
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+  <div class="nav-mobile" id="nav-mobile">
+    <a href="./index.html">Home</a>
+    <a href="./categories.html">Categories</a>
+    <a href="./sell.html">Sell</a>
+    <a href="./feedback.html">Feedback</a>
+    <div class="nav-mobile-divider"></div>
+    <a data-auth-pill-mobile href="./signin.html">Sign In</a>
+    <button data-logout-mobile class="btn ghost" style="display:none">Logout</button>
+  </div>
+
+  <section class="hero">
+    <div>
+      <p class="eyebrow">TalkFreeTT Feedback Hub</p>
+      <h1>AuctionTT Feedback Portal</h1>
+      <p class="hero-text">Use this portal for Bug, Suggestion, Bad listing/report, Verification issue, Payment issue, and Other.</p>
+    </div>
+  </section>
+
+  <main class="page-main">
+    <section class="card" style="padding:14px">
+      <div style="border-radius:16px; overflow:hidden; border:1px solid rgba(255,255,255,0.13)">
+        <iframe
+          title="AuctionTT Feedback"
+          src="https://talkfreett.com/feedback?embed=1&site=auctiontt"
+          style="width:100%; height:78vh; border:0"
+        ></iframe>
+      </div>
+      <p class="subtle" style="margin-top:12px; margin-bottom:0">
+        <a href="https://talkfreett.com/feedback?embed=1&site=auctiontt" target="_blank" rel="noreferrer" style="font-weight:700">
+          Open full feedback portal
+        </a>
+      </p>
+    </section>
+  </main>
+
+  <script src="./js/common.js"></script>
+</body>
+</html>

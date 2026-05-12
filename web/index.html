@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AuctionTT | Home</title>
+  <meta name="description" content="AuctionTT is a Trinidad and Tobago local deals and bidding platform. Demo listings are clearly marked for launch QA." />
+  <meta property="og:title" content="AuctionTT | Local Deals & Auctions" />
+  <meta property="og:description" content="Browse local Trinidad and Tobago listings, place bids, and discover verified seller deals. Demo data is clearly labeled." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Public+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./index.html">AuctionTT</a>
+    <nav>
+      <a href="./index.html" class="active">Home</a>
+      <a href="./categories.html">Categories</a>
+      <a href="./sell.html">Sell</a>
+      <a href="./feedback.html">Feedback</a>
+      <a data-auth-pill href="./signin.html">Sign In</a>
+      <button data-logout class="btn ghost btn-sm" style="display:none">Logout</button>
+    </nav>
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+  <div class="nav-mobile" id="nav-mobile">
+    <a href="./index.html">Home</a>
+    <a href="./categories.html">Categories</a>
+    <a href="./sell.html">Sell</a>
+    <a href="./feedback.html">Feedback</a>
+    <div class="nav-mobile-divider"></div>
+    <a data-auth-pill-mobile href="./signin.html">Sign In</a>
+    <button data-logout-mobile class="btn ghost" style="display:none">Logout</button>
+  </div>
+
+  <section class="hero hero-trinidad">
+    <div>
+      <p class="eyebrow">AuctionTT | Trinidad & Tobago</p>
+      <h1>Bid, buy, and sell local deals with fast category search.</h1>
+      <p class="hero-text">All `[DEMO]` listings are fake sample content for launch QA and rollout preview.</p>
+
+      <form id="search-form" class="search-panel">
+        <div class="field-wrap">
+          <input id="category-search" type="text" placeholder="Type category (e.g. electronics, tools, vehicle parts...)" autocomplete="off" />
+          <div id="category-hint" class="hint-list"></div>
+        </div>
+        <input id="location-search" type="text" placeholder="Area in Trinidad or Tobago" />
+        <button class="btn" type="submit">Search</button>
+      </form>
+
+      <p id="results-note" class="subtle">Loading demo lots...</p>
+    </div>
+    <aside class="stats-card">
+      <h3>Live Pulse</h3>
+      <p><strong id="stat-live">0</strong> live lots</p>
+      <p><strong id="stat-hot">0</strong> hot lots</p>
+      <p><strong id="stat-cats">0</strong> categories</p>
+    </aside>
+  </section>
+
+  <main class="page-main">
+    <section>
+      <h2>Spotlight Lots</h2>
+      <div id="spotlight-grid" class="lot-grid lot-grid-3"></div>
+    </section>
+
+    <section>
+      <h2>Marketplace</h2>
+      <div id="lot-grid" class="lot-grid"></div>
+    </section>
+  </main>
+
+  <template id="lot-card-template">
+    <article class="lot-card">
+      <img class="lot-image" alt="Lot image" />
+      <div class="lot-content">
+        <p class="chip lot-category"></p>
+        <h3 class="lot-title"></h3>
+        <p class="subtle lot-seller"></p>
+        <div class="lot-row">
+          <strong class="lot-price"></strong>
+          <span class="subtle lot-bids"></span>
+        </div>
+        <p class="timer lot-time"></p>
+
+        <div class="lot-actions">
+          <form class="bid-form inline-form">
+            <input class="bidder-name" type="text" placeholder="Bidder" required />
+            <input class="bid-amount" type="number" min="1" step="1" placeholder="Amount" required />
+            <button class="btn" type="submit">Bid</button>
+          </form>
+
+          <form class="watch-form inline-form">
+            <input class="watch-email" type="email" placeholder="Email watchlist" required />
+            <button class="btn ghost" type="submit">Watch</button>
+          </form>
+
+          <button class="btn ghost pay-now" type="button">Pay Deposit (Fygaro)</button>
+
+          <p class="subtle lot-message"></p>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <script src="./js/api.js"></script>
+  <script src="./js/common.js"></script>
+  <script src="./js/home.js"></script>
+</body>
+</html>
