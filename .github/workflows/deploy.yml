@@ -14,5 +14,5 @@ jobs:
         working-directory: web
         run: npx vercel deploy --prod --yes --token ${{ secrets.VERCEL_TOKEN }}
         env:
-          VERCEL_ORG_ID: the-sovereign-digital-group-ltd
+          VERCEL_ORG_ID: team_e6XcL6m7K3svb2GuzKz3vKVF
           VERCEL_PROJECT_ID: prj_KX8st2DIGGxtPjMw1SFk5RloBZd7
