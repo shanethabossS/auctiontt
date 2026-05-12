@@ -1,0 +1,18 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy web/ to Vercel
+        working-directory: web
+        run: npx vercel deploy --prod --yes --token ${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: the-sovereign-digital-group-ltd
+          VERCEL_PROJECT_ID: prj_KX8st2DIGGxtPjMw1SFk5RloBZd7
