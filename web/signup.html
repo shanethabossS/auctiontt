@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AuctionTT | Sign In</title>
-  <meta name="description" content="Sign in to AuctionTT to bid, watch listings, and manage local seller submissions in Trinidad and Tobago." />
-  <meta property="og:title" content="AuctionTT | Sign In" />
-  <meta property="og:description" content="Access AuctionTT accounts for buyers and verified sellers." />
+  <title>AuctionTT | Sign Up</title>
+  <meta name="description" content="Create your AuctionTT account to bid, watch listings, and sell across Trinidad and Tobago." />
+  <meta property="og:title" content="AuctionTT | Sign Up" />
+  <meta property="og:description" content="Join AuctionTT as a buyer or seller and access local listings." />
   <meta property="og:type" content="website" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,28 +38,36 @@
     <button data-logout-mobile class="btn ghost" style="display:none">Logout</button>
   </div>
 
-  <main class="page-main auth-grid">
+  <main class="page-main" style="max-width: 620px;">
     <section class="card">
-      <h2>Sign In</h2>
+      <h2>Create Account</h2>
       <div class="stack-form" style="margin-bottom:12px">
-        <button id="google-login-btn" class="btn google-auth-btn" type="button">
+        <button id="google-signup-btn" class="btn google-auth-btn" type="button">
           <span class="google-icon" aria-hidden="true">G</span>
           <span>Continue with Google</span>
         </button>
       </div>
-      <p class="auth-divider">or use email and password</p>
-      <form id="signin-form" class="stack-form">
+      <p class="auth-divider">or create account with email</p>
+      <form id="signup-form" class="stack-form">
+        <input name="full_name" type="text" placeholder="Full name" required />
         <input name="email" type="email" placeholder="Email" required />
-        <input name="password" type="password" placeholder="Password" required />
-        <button class="btn" type="submit">Sign In</button>
+        <input name="phone" type="tel" placeholder="Phone number" />
+        <input name="password" type="password" placeholder="Password (min 8 chars)" minlength="8" required />
+        <input name="confirm_password" type="password" placeholder="Confirm password" minlength="8" required />
+        <select name="role">
+          <option value="buyer">Buyer</option>
+          <option value="seller">Seller</option>
+        </select>
+        <button class="btn" type="submit">Create Account</button>
       </form>
-      <p class="subtle auth-switch">Need an account? <a href="./signup.html">Sign up</a></p>
+      <p class="subtle auth-switch">Already have an account? <a href="./signin.html">Sign in</a></p>
     </section>
-    <p id="auth-message" class="subtle" style="grid-column: 1 / -1;"></p>
+
+    <p id="auth-message" class="subtle"></p>
   </main>
 
   <script src="./js/api.js"></script>
   <script src="./js/common.js"></script>
-  <script src="./js/signin.js"></script>
+  <script src="./js/signup.js"></script>
 </body>
 </html>
