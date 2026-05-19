@@ -30,6 +30,7 @@ function timeLeft(iso) {
 }
 
 function updateAuthPills() {
+  if (!window.AuctionApi) return;          // api.js not loaded yet
   const user = window.AuctionApi.getSessionUser();
 
   // Desktop + mobile auth pills
@@ -50,14 +51,10 @@ function updateAuthPills() {
     button.style.display = user ? "inline-block" : "none";
     button.onclick = async () => {
       try {
-        const refresh = window.AuctionApi.getSessionTokens()?.refresh_token;
-        if (refresh) {
-          await fetch("/auth/logout", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ refresh_token: refresh }),
-          });
-        }
+        await fetch("/auth/logout", {
+          method: "POST",
+          credentials: "include",
+        });
       } catch {
         // Ignore network issues and clear local session anyway.
       }
