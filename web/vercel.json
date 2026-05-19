@@ -1,0 +1,71 @@
+{
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https://api.sovdigitalgroup.com https://auction-api.sovdigitalgroup.com http://127.0.0.1:33001 http://127.0.0.1:3001; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/postgrest/(.*)",
+      "destination": "https://auction-api.sovdigitalgroup.com/postgrest/$1"
+    },
+    {
+      "source": "/upload-image",
+      "destination": "https://auction-api.sovdigitalgroup.com/upload-image"
+    },
+    {
+      "source": "/auth/(.*)",
+      "destination": "https://auction-api.sovdigitalgroup.com/auth/$1"
+    },
+    {
+      "source": "/time/now",
+      "destination": "https://auction-api.sovdigitalgroup.com/time/now"
+    },
+    {
+      "source": "/payment/(.*)",
+      "destination": "https://auction-api.sovdigitalgroup.com/payment/$1"
+    },
+    {
+      "source": "/me/(.*)",
+      "destination": "https://auction-api.sovdigitalgroup.com/me/$1"
+    },
+    {
+      "source": "/bids/place",
+      "destination": "https://auction-api.sovdigitalgroup.com/bids/place"
+    },
+    {
+      "source": "/watchlists/add",
+      "destination": "https://auction-api.sovdigitalgroup.com/watchlists/add"
+    },
+    {
+      "source": "/uploads/(.*)",
+      "destination": "https://auction-api.sovdigitalgroup.com/uploads/$1"
+    }
+  ]
+}
