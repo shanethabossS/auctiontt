@@ -660,12 +660,18 @@ input[type="file"] {
   box-shadow: 0 0 24px rgba(245,158,11,0.12);
   transform: translateY(-3px);
 }
+.category-icon {
+  font-size: 2rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 6px rgba(245,158,11,0.3));
+}
 .category-card h3 {
   font-size: 1.02rem;
   color: var(--gold-neon);
   text-shadow: 0 0 8px rgba(245,158,11,0.15);
 }
 .category-card p { color: var(--muted-light); font-size: 0.85rem; }
+.category-card .btn { margin-top: 4px; }
 
 /* ─── Auth / Forms ──────────────────────────────────────────────────────── */
 .auth-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
