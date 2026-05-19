@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AuctionTT | Lot Details</title>
+  <meta name="description" content="AuctionTT lot details page with quick actions for bidding, sharing, and reporting." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Public+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./index.html">AuctionTT</a>
+    <nav>
+      <a href="./index.html">Home</a>
+      <a href="./categories.html">Categories</a>
+      <a href="./sell.html">Sell</a>
+      <a href="./feedback.html">Feedback</a>
+      <a data-auth-pill href="./signin.html">Sign In</a>
+      <button data-logout class="btn ghost btn-sm" style="display:none">Logout</button>
+    </nav>
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+  <div class="nav-mobile" id="nav-mobile">
+    <a href="./index.html">Home</a>
+    <a href="./categories.html">Categories</a>
+    <a href="./sell.html">Sell</a>
+    <a href="./feedback.html">Feedback</a>
+    <div class="nav-mobile-divider"></div>
+    <a data-auth-pill-mobile href="./signin.html">Sign In</a>
+    <button data-logout-mobile class="btn ghost" style="display:none">Logout</button>
+  </div>
+
+  <main class="page-main">
+    <section class="card" id="lot-detail-wrap">
+      <a href="./index.html" class="btn ghost btn-sm" data-testid="listing-back-button">Back to Marketplace</a>
+      <p class="subtle" id="lot-loading" style="margin-top: 12px;">Loading lot details...</p>
+      <div id="lot-detail" style="display:none; margin-top: 12px;">
+        <img id="lot-image" class="lot-image" alt="Lot image" />
+        <div style="padding-top: 14px;">
+          <p class="chip" id="lot-category"></p>
+          <h1 id="lot-title" style="margin-top: 10px; font-size: 1.5rem;"></h1>
+          <p class="subtle" id="lot-seller" style="margin-top: 6px;"></p>
+          <p id="lot-price" style="margin-top: 12px; font-size: 1.3rem; font-weight: 700; color: var(--gold-light);"></p>
+          <p class="timer" id="lot-time" style="margin-top: 8px;"></p>
+          <p class="subtle" id="lot-location" style="margin-top: 8px;"></p>
+          <p class="subtle" id="lot-bids" style="margin-top: 6px;"></p>
+        </div>
+
+        <div class="lot-actions" style="margin-top: 14px;">
+          <a href="./index.html" class="btn" data-testid="listing-primary-action">Go to Live Bidding</a>
+          <button id="share-lot" type="button" class="btn ghost" data-testid="listing-share-button">Share Lot</button>
+          <a id="report-lot" href="#" target="_blank" rel="noopener noreferrer" class="btn ghost" data-testid="listing-report-button">Report Lot</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./js/api.js"></script>
+  <script src="./js/common.js"></script>
+  <script src="./js/lot.js"></script>
+</body>
+</html>
