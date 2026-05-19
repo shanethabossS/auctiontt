@@ -16,6 +16,92 @@ let activeCategorySlug = "";
 let timerIntervalId = null;
 let refreshIntervalId = null;
 let serverTimeIntervalId = null;
+let usingFallbackData = false;
+
+function buildDemoData() {
+  const now = Date.now();
+  const inHours = (hours) => new Date(now + hours * 60 * 60 * 1000).toISOString();
+
+  const demoCategories = [
+    { slug: "electronics", name: "Electronics", sort_order: 1 },
+    { slug: "home-garden", name: "Home & Garden", sort_order: 2 },
+    { slug: "vehicles", name: "Vehicle Parts", sort_order: 3 },
+    { slug: "collectibles", name: "Collectibles", sort_order: 4 },
+  ];
+
+  const demoLots = [
+    {
+      id: "demo-lot-1",
+      title: "[DEMO] iPhone 14 Pro (256GB)",
+      image_url: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1200&q=80",
+      current_bid: 4200,
+      starting_bid: 3500,
+      bid_count: 14,
+      is_hot: true,
+      is_featured: true,
+      ends_at: inHours(18),
+      city: "Port of Spain",
+      state: "Trinidad",
+      seller_name: "IslandTech Ltd",
+      seller_verified: true,
+      category_slug: "electronics",
+      category_name: "Electronics",
+    },
+    {
+      id: "demo-lot-2",
+      title: "[DEMO] Stainless BBQ Grill Set",
+      image_url: "https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=1200&q=80",
+      current_bid: 900,
+      starting_bid: 650,
+      bid_count: 7,
+      is_hot: false,
+      is_featured: true,
+      ends_at: inHours(9),
+      city: "San Fernando",
+      state: "Trinidad",
+      seller_name: "YardWorks Depot",
+      seller_verified: false,
+      category_slug: "home-garden",
+      category_name: "Home & Garden",
+    },
+    {
+      id: "demo-lot-3",
+      title: "[DEMO] Rims Set (17in) - 4 pcs",
+      image_url: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80",
+      current_bid: 1800,
+      starting_bid: 1200,
+      bid_count: 21,
+      is_hot: true,
+      is_featured: false,
+      ends_at: inHours(28),
+      city: "Arima",
+      state: "Trinidad",
+      seller_name: "Roadline Auto",
+      seller_verified: true,
+      category_slug: "vehicles",
+      category_name: "Vehicle Parts",
+    },
+    {
+      id: "demo-lot-4",
+      title: "[DEMO] Vintage Camera Collection",
+      image_url: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1200&q=80",
+      current_bid: 760,
+      starting_bid: 500,
+      bid_count: 10,
+      is_hot: false,
+      is_featured: false,
+      ends_at: inHours(36),
+      city: "Scarborough",
+      state: "Tobago",
+      seller_name: "Island Finds",
+      seller_verified: true,
+      category_slug: "collectibles",
+      category_name: "Collectibles",
+    },
+  ];
+
+  return { demoCategories, demoLots };
+}
 
 function isLotOpen(lot) {
   return new Date(lot.ends_at).getTime() > window.AuctionUi.nowMs();
@@ -36,7 +122,7 @@ function buildCard(lot, withActions) {
   const node = lotTemplate.content.cloneNode(true);
   const card = node.querySelector(".lot-card");
   const image = node.querySelector(".lot-image");
-  const detailsHref = `./lot.html?id=${encodeURIComponent(lot.id)}`;
+  const detailsHref = usingFallbackData ? "./signin.html" : `./lot.html?id=${encodeURIComponent(lot.id)}`;
   image.src = lot.image_url || "https://images.unsplash.com/photo-1499696010180-025ef6e1a8f9?auto=format&fit=crop&w=1200&q=80";
   image.alt = `${lot.title} lot image`;
 
@@ -50,7 +136,7 @@ function buildCard(lot, withActions) {
   timerNode.dataset.endsAt = lot.ends_at;
   timerNode.textContent = window.AuctionUi.timeLeft(lot.ends_at);
 
-  if (!withActions) {
+  if (!withActions || usingFallbackData) {
     node.querySelector(".lot-actions").remove();
   } else {
     const detailLink = document.createElement("a");
@@ -242,9 +328,13 @@ function runFilter() {
   });
 
   lotGrid.innerHTML = "";
-  filtered.forEach((lot) => lotGrid.appendChild(buildCard(lot, true)));
+  filtered.forEach((lot) => lotGrid.appendChild(buildCard(lot, !usingFallbackData)));
   refreshTimerText();
-  resultNote.textContent = `${filtered.length} lots found`;
+  if (usingFallbackData) {
+    resultNote.textContent = "Live auctions coming soon - backend is being deployed. Showing demo preview lots.";
+  } else {
+    resultNote.textContent = `${filtered.length} lots found`;
+  }
 }
 
 async function loadData() {
@@ -259,6 +349,16 @@ async function loadData() {
   updateStats();
   renderSpotlight();
 
+  runFilter();
+}
+
+function loadFallbackData() {
+  const { demoCategories, demoLots } = buildDemoData();
+  usingFallbackData = true;
+  categories = demoCategories;
+  lots = demoLots;
+  updateStats();
+  renderSpotlight();
   runFilter();
 }
 
@@ -314,6 +414,7 @@ function startLiveTimers() {
     await loadData();
     startLiveTimers();
   } catch (err) {
-    resultNote.textContent = err.message;
+    loadFallbackData();
+    resultNote.textContent = "Live auctions coming soon - backend is being deployed. Showing demo preview lots.";
   }
 })();
