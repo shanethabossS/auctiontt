@@ -59,7 +59,7 @@ function updateAuthPills() {
         // Ignore network issues and clear local session anyway.
       }
       window.AuctionApi.clearSessionUser();
-      window.location.href = "./signin.html";
+      window.location.href = "./index.html";
     };
   });
 }
