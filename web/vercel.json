@@ -30,6 +30,10 @@
       ]
     }
   ],
+  "redirects": [
+    { "source": "/login", "destination": "/signin.html", "statusCode": 301 },
+    { "source": "/register", "destination": "/signup.html", "statusCode": 301 }
+  ],
   "rewrites": [
     {
       "source": "/postgrest/(.*)",
