@@ -318,8 +318,8 @@ select,
 textarea {
   width: 100%;
   border: 1px solid var(--border-md);
-  background: rgba(255,255,255,0.04);
-  color: var(--text);
+  background: #ffffff;
+  color: #111111;
   border-radius: var(--radius-sm);
   padding: 11px 14px;
   min-height: 44px;
@@ -341,6 +341,15 @@ textarea:focus {
 input::placeholder,
 textarea::placeholder { color: var(--muted); }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: #111111;
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset;
+}
+
 select {
   cursor: pointer;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23fbbf24' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
@@ -359,8 +368,8 @@ input[type="file"] {
 /* Hero search uses lighter inputs */
 .search-panel input,
 .search-panel select {
-  background: rgba(255,255,255,0.06);
-  border-color: rgba(255,255,255,0.12);
+  background: #ffffff;
+  border-color: var(--border-md);
 }
 
 .hint-list {
