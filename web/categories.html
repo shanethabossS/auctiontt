@@ -3,15 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DealzTT | Categories</title>
-  <meta name="description" content="Browse DealzTT categories for local Trinidad and Tobago deals and auctions. Demo content is clearly marked." />
-  <meta property="og:title" content="DealzTT | Categories" />
-  <meta property="og:description" content="Filter categories and discover local deals across Trinidad and Tobago on DealzTT." />
+  <title>DealzTT Categories | Browse Trinidad & Tobago Auction Categories</title>
+  <meta name="description" content="Browse DealzTT auction categories for Trinidad & Tobago including electronics, tools, vehicle parts, home goods, and more." />
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+  <link rel="canonical" href="https://dealztt.com/categories.html" />
+  <meta property="og:title" content="DealzTT Categories | Browse Trinidad & Tobago Auction Categories" />
+  <meta property="og:description" content="Filter auction categories and discover local deals across Trinidad & Tobago on DealzTT." />
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://dealztt.com/categories.html" />
+  <meta property="og:site_name" content="DealzTT" />
+  <meta property="og:image" content="https://dealztt.com/og-cover.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="DealzTT Categories | Browse Trinidad & Tobago Auction Categories" />
+  <meta name="twitter:description" content="Explore auction categories and local deals across Trinidad & Tobago on DealzTT." />
+  <meta name="twitter:image" content="https://dealztt.com/og-cover.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Public+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css" />
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "DealzTT Categories",
+      "url": "https://dealztt.com/categories.html",
+      "description": "Auction categories for local Trinidad & Tobago deals on DealzTT."
+    }
+  </script>
 </head>
 <body>
   <header class="site-header">
@@ -41,8 +59,9 @@
   <main class="page-main">
     <section class="page-intro">
       <h1>All Categories</h1>
-      <p>Type to filter DealzTT category names.</p>
-      <input id="category-filter-input" type="text" placeholder="Search category names..." />
+      <p>Type to filter DealzTT category names and discover auction opportunities across Trinidad &amp; Tobago.</p>
+      <input id="category-filter-input" type="text" placeholder="Search category names..." list="category-suggestions" autocomplete="off" />
+      <datalist id="category-suggestions"></datalist>
       <p id="category-count" class="subtle"></p>
     </section>
 

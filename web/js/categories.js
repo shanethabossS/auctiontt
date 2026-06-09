@@ -1,5 +1,6 @@
 const list = document.getElementById("category-grid");
 const input = document.getElementById("category-filter-input");
+const suggestions = document.getElementById("category-suggestions");
 const count = document.getElementById("category-count");
 let all = [];
 
@@ -32,9 +33,19 @@ function render(rows) {
   count.textContent = `${rows.length} categories`;
 }
 
+function renderSuggestions(rows) {
+  suggestions.innerHTML = "";
+  rows.slice(0, 8).forEach((row) => {
+    const option = document.createElement("option");
+    option.value = row.name;
+    suggestions.appendChild(option);
+  });
+}
+
 input.addEventListener("input", () => {
   const q = input.value.trim().toLowerCase();
   const filtered = all.filter((row) => row.name.toLowerCase().includes(q) || row.slug.toLowerCase().includes(q));
+  renderSuggestions(filtered);
   render(filtered);
 });
 
@@ -45,5 +56,6 @@ input.addEventListener("input", () => {
   } catch {
     all = DEMO_CATEGORIES;
   }
+  renderSuggestions(all);
   render(all);
 })();
