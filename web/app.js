@@ -29,7 +29,7 @@ async function detectApiBase() {
       // Try the next candidate.
     }
   }
-  throw new Error("No PostgREST endpoint reachable. Start the AuctionTT docker stack first.");
+  throw new Error("No PostgREST endpoint reachable. Start the DealzTT docker stack first.");
 }
 
 async function fetchJson(path, options = {}) {
@@ -97,9 +97,9 @@ function renderLots(lots) {
     const hotTag = node.querySelector(".tag.hot");
     if (!lot.is_hot) hotTag.style.display = "none";
 
-    node.querySelector(".lot-meta").textContent = `${lot.category_name || "General"} • ${lot.seller_name}${lot.seller_verified ? " • Verified" : ""}`;
+    node.querySelector(".lot-meta").textContent = `${lot.category_name || "General"} ï¿½ ${lot.seller_name}${lot.seller_verified ? " ï¿½ Verified" : ""}`;
     node.querySelector(".lot-title").textContent = lot.title;
-    node.querySelector(".lot-sub").textContent = `${lot.city || ""}${lot.state ? `, ${lot.state}` : ""} • ${lot.shipping_available ? "Ships" : "Pickup"}`;
+    node.querySelector(".lot-sub").textContent = `${lot.city || ""}${lot.state ? `, ${lot.state}` : ""} ï¿½ ${lot.shipping_available ? "Ships" : "Pickup"}`;
     node.querySelector(".lot-bid").textContent = money(lot.current_bid || lot.starting_bid);
     node.querySelector(".lot-count").textContent = `${lot.bid_count} bids`;
     node.querySelector(".lot-end").textContent = timeLeft(lot.ends_at);
@@ -167,7 +167,7 @@ function renderSpotlight(lots) {
     card.querySelector(".form-msg").remove();
 
     node.querySelector(".thumb").src = lot.image_url || "https://images.unsplash.com/photo-1499696010180-025ef6e1a8f9?auto=format&fit=crop&w=1200&q=80";
-    node.querySelector(".lot-meta").textContent = `${lot.category_name || "General"} • ${lot.seller_name}`;
+    node.querySelector(".lot-meta").textContent = `${lot.category_name || "General"} ï¿½ ${lot.seller_name}`;
     node.querySelector(".lot-title").textContent = lot.title;
     node.querySelector(".lot-sub").textContent = lot.auction_title;
     node.querySelector(".lot-bid").textContent = money(lot.current_bid || lot.starting_bid);

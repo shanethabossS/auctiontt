@@ -51,7 +51,7 @@ CORS_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
         "AUCTIONSITE_CORS_ORIGINS",
-        "https://auctionsite-web.vercel.app,https://tpdeals.com,https://www.tpdeals.com",
+        "https://dealztt.com,https://tpdeals.com,https://www.tpdeals.com",
     ).split(",")
     if origin.strip()
 ]
@@ -280,7 +280,7 @@ def _extract_central_user(raw_payload: dict[str, Any]) -> dict[str, str]:
         str(candidate.get("full_name") or candidate.get("name") or candidate.get("display_name") or "").strip()
     )
     if not full_name:
-        full_name = email.split("@", 1)[0] or "AuctionTT User"
+        full_name = email.split("@", 1)[0] or "DealzTT User"
 
     return {"email": email, "full_name": full_name}
 

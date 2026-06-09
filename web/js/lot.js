@@ -22,7 +22,7 @@ function lotHref(id) {
 
 async function shareLot(lot) {
   const url = lotHref(lot.id);
-  const text = `Check this lot on AuctionTT: ${lot.title}`;
+  const text = `Check this lot on DealzTT: ${lot.title}`;
   if (navigator.share) {
     try {
       await navigator.share({ title: lot.title, text, url });
