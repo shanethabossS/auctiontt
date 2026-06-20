@@ -272,9 +272,22 @@ function buildCard(lot, withActions) {
   node.querySelector(".lot-seller").textContent = `${lot.seller_name}${lot.seller_verified ? " | Verified" : ""}`;
   node.querySelector(".lot-price").textContent = window.AuctionUi.money(lot.current_bid || lot.starting_bid);
   node.querySelector(".lot-bids").textContent = `${lot.bid_count} bids`;
+  node.querySelector(".lot-location").textContent = `${lot.city || ""}${lot.city && lot.state ? ", " : ""}${lot.state || ""}` || "T&T pickup";
   const timerNode = node.querySelector(".lot-time");
   timerNode.dataset.endsAt = lot.ends_at;
   timerNode.textContent = window.AuctionUi.timeLeft(lot.ends_at);
+  const badgesNode = node.querySelector(".lot-badges");
+  const badgeValues = [
+    lot.seller_verified ? "Verified seller" : "Local seller",
+    lot.is_hot ? "High activity" : "Open for bids",
+    "Pickup / meetup"
+  ];
+  badgeValues.forEach((badge) => {
+    const badgeNode = document.createElement("span");
+    badgeNode.className = "lot-badge";
+    badgeNode.textContent = badge;
+    badgesNode.appendChild(badgeNode);
+  });
 
   if (!withActions || usingFallbackData) {
     node.querySelector(".lot-actions").remove();

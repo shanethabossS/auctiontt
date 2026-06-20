@@ -855,3 +855,267 @@ input[type="file"] {
 @media (min-width: 1240px) {
   .lot-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
 }
+
+.hero-copy {
+  display: grid;
+  gap: 16px;
+}
+
+.hero-highlights {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.hero-highlight {
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(245,158,11,0.08));
+  padding: 14px;
+  display: grid;
+  gap: 4px;
+}
+
+.hero-highlight-value {
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--gold-neon);
+}
+
+.hero-highlight-label {
+  color: var(--muted-light);
+  font-size: 0.82rem;
+}
+
+.hero-sidecard {
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+
+.pulse-metrics {
+  display: grid;
+  gap: 10px;
+}
+
+.trust-panel {
+  border-top: 1px solid var(--border-gold);
+  padding-top: 14px;
+}
+
+.trust-title {
+  color: var(--text);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.trust-list {
+  padding-left: 18px;
+}
+
+.feature-band {
+  display: grid;
+  gap: 18px;
+}
+
+.feature-band-header {
+  display: grid;
+  gap: 8px;
+  max-width: 760px;
+}
+
+.feature-band-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.feature-card {
+  border: 1px solid var(--border-md);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(245,158,11,0.06));
+  padding: 18px;
+  display: grid;
+  gap: 10px;
+  transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.feature-card:hover {
+  border-color: var(--gold-border-strong);
+  box-shadow: var(--shadow-gold);
+  transform: translateY(-2px);
+}
+
+.feature-card h3 {
+  font-size: 1rem;
+}
+
+.lot-location {
+  font-size: 0.84rem;
+}
+
+.lot-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.lot-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border-md);
+  background: rgba(255,255,255,0.03);
+  color: var(--text-2);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.lot-shell {
+  display: grid;
+  gap: 14px;
+}
+
+.lot-shell-topbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lot-shell-note {
+  max-width: 42ch;
+}
+
+.lot-detail-layout {
+  display: grid;
+  gap: 18px;
+}
+
+.lot-stage {
+  display: grid;
+  gap: 18px;
+  border: 1px solid var(--border-gold);
+  border-radius: 24px;
+  background: linear-gradient(145deg, rgba(18,18,30,0.98), rgba(245,158,11,0.04));
+  padding: 18px;
+  box-shadow: var(--shadow), var(--shadow-neon);
+}
+
+.lot-stage-media {
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid var(--border-md);
+  background: var(--bg-card-2);
+}
+
+.lot-stage-image {
+  width: 100%;
+  min-height: 260px;
+  max-height: 420px;
+  object-fit: cover;
+}
+
+.lot-stage-copy {
+  display: grid;
+  gap: 14px;
+}
+
+.lot-stage-header {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.lot-stage-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.lot-stage-title {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  max-width: 18ch;
+}
+
+.lot-stage-seller {
+  font-size: 0.95rem;
+}
+
+.lot-stage-price {
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-size: clamp(1.6rem, 4vw, 2.25rem);
+  font-weight: 700;
+  color: var(--gold-neon);
+  text-shadow: 0 0 18px rgba(251,191,36,0.3);
+}
+
+.lot-stage-meta {
+  display: grid;
+  gap: 8px;
+}
+
+.lot-stage-description {
+  font-size: 0.95rem;
+  max-width: 64ch;
+}
+
+.lot-detail-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.lot-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.lot-panel-wide {
+  gap: 16px;
+}
+
+.lot-detail-actions {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.detail-bullet-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.detail-bullet {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255,255,255,0.02);
+  padding: 14px;
+  display: grid;
+  gap: 6px;
+}
+
+.detail-label {
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+@media (min-width: 540px) {
+  .feature-band-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .detail-bullet-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+
+@media (min-width: 760px) {
+  .lot-detail-grid { grid-template-columns: 1.1fr 0.9fr; }
+  .lot-panel-wide { grid-column: 1 / -1; }
+}
+
+@media (min-width: 980px) {
+  .feature-band-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
+  .lot-stage { grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr); align-items: stretch; }
+}
