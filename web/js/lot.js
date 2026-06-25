@@ -17,6 +17,123 @@ const shareButton = document.getElementById("share-lot");
 const reportLink = document.getElementById("report-lot");
 const jsonLdNode = document.getElementById("lot-jsonld");
 
+function closeReportModal() {
+  const overlay = document.getElementById("report-modal-overlay");
+  if (overlay) overlay.remove();
+}
+
+async function submitLotReport(lot, reason, details, contactEmail, form, statusNode, submitButton) {
+  submitButton.disabled = true;
+  statusNode.textContent = "Submitting report...";
+
+  try {
+    const response = await fetch("https://api.sovdigitalgroup.com/api/reports", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        site: "dealztt",
+        target_type: "lot",
+        target_id: String(lot.id),
+        reason,
+        details,
+        contact_email: contactEmail,
+      }),
+    });
+
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(payload.error || "Could not submit report.");
+    }
+
+    statusNode.textContent = "Report submitted. Thank you.";
+    form.reset();
+    window.setTimeout(closeReportModal, 900);
+  } catch (err) {
+    statusNode.textContent = err.message || "Could not submit report.";
+    submitButton.disabled = false;
+  }
+}
+
+function openReportModal(lot) {
+  closeReportModal();
+
+  const overlay = document.createElement("div");
+  overlay.id = "report-modal-overlay";
+  overlay.style.cssText = "position:fixed;inset:0;background:rgba(17,24,39,.72);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9999;";
+
+  const modal = document.createElement("div");
+  modal.style.cssText = "width:min(100%,480px);background:#fff;border-radius:20px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.35);";
+
+  const title = document.createElement("h3");
+  title.textContent = "Report lot";
+  title.style.cssText = "margin:0 0 12px;font-size:1.2rem;";
+
+  const form = document.createElement("form");
+  form.style.cssText = "display:flex;flex-direction:column;gap:12px;";
+
+  const reason = document.createElement("select");
+  reason.required = true;
+  reason.style.cssText = "padding:10px 12px;border:1px solid #d1d5db;border-radius:12px;";
+  [
+    ["", "Select a reason"],
+    ["spam", "Spam"],
+    ["scam", "Scam"],
+    ["inappropriate", "Inappropriate"],
+    ["illegal", "Illegal"],
+    ["harassment", "Harassment"],
+    ["other", "Other"],
+  ].forEach(([value, label]) => {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = label;
+    if (!value) option.disabled = true;
+    if (!value) option.selected = true;
+    reason.appendChild(option);
+  });
+
+  const details = document.createElement("textarea");
+  details.rows = 4;
+  details.maxLength = 2000;
+  details.placeholder = "Additional details (optional)";
+  details.style.cssText = "padding:10px 12px;border:1px solid #d1d5db;border-radius:12px;";
+
+  const email = document.createElement("input");
+  email.type = "email";
+  email.placeholder = "Your email (optional if signed out)";
+  email.style.cssText = "padding:10px 12px;border:1px solid #d1d5db;border-radius:12px;";
+
+  const statusNode = document.createElement("p");
+  statusNode.style.cssText = "margin:0;font-size:.9rem;color:#4b5563;";
+
+  const actions = document.createElement("div");
+  actions.style.cssText = "display:flex;gap:10px;justify-content:flex-end;";
+
+  const cancelButton = document.createElement("button");
+  cancelButton.type = "button";
+  cancelButton.textContent = "Cancel";
+  cancelButton.style.cssText = "padding:10px 14px;border:1px solid #d1d5db;border-radius:999px;background:#fff;";
+  cancelButton.onclick = closeReportModal;
+
+  const submitButton = document.createElement("button");
+  submitButton.type = "submit";
+  submitButton.textContent = "Submit Report";
+  submitButton.style.cssText = "padding:10px 14px;border:none;border-radius:999px;background:#dc2626;color:#fff;font-weight:600;";
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    submitLotReport(lot, reason.value, details.value.trim(), email.value.trim().toLowerCase(), form, statusNode, submitButton);
+  });
+
+  actions.append(cancelButton, submitButton);
+  form.append(reason, details, email, statusNode, actions);
+  modal.append(title, form);
+  overlay.appendChild(modal);
+  overlay.addEventListener("click", (event) => {
+    if (event.target === overlay) closeReportModal();
+  });
+  document.body.appendChild(overlay);
+}
+
 function upsertMeta(selector, attr, value) {
   let node = document.head.querySelector(selector);
   if (!node) {
@@ -88,7 +205,11 @@ function renderLot(lot) {
   regionNode.textContent = `${lot.city || "Trinidad & Tobago"}${lot.state ? `, ${lot.state}` : ""}`;
   urgencyNode.textContent = urgencyText;
   sellerStatusNode.textContent = isVerifiedSeller ? "Verified seller" : "Marketplace seller";
-  reportLink.href = `https://talkfreett.com/feedback?site=auctiontt&target=lot:${lot.id}`;
+  reportLink.href = "#";
+  reportLink.onclick = (event) => {
+    event.preventDefault();
+    openReportModal(lot);
+  };
   shareButton.onclick = () => shareLot(lot);
 
   document.title = `${lot.title} | DealzTT Auctions`;
