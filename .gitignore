@@ -1,0 +1,7 @@
+.vercel
+.playwright-cli/
+__pycache__/
+*.pyc
+node_modules/
+.env
+.env.local
