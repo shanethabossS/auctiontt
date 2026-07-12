@@ -5,3 +5,7 @@ __pycache__/
 node_modules/
 .env
 .env.local
+
+# Vercel CLI env pull outputs (may contain live secrets)
+.env.vercel*
+.env*.production
