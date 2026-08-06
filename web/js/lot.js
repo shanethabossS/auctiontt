@@ -19,6 +19,17 @@ const sellerStatusNode = document.getElementById("lot-seller-status");
 const shareButton = document.getElementById("share-lot");
 const reportLink = document.getElementById("report-lot");
 const jsonLdNode = document.getElementById("lot-jsonld");
+const relatedNode = document.getElementById("related-lots");
+const relatedGrid = document.getElementById("related-lots-grid");
+const relatedCopy = document.getElementById("related-lots-copy");
+
+function renderRelated(lot, rows) {
+  const related = rows.filter((row) => row.id !== lot.id && new Date(row.ends_at).getTime() > Date.now()).sort((a, b) => Number(b.category_name === lot.category_name) - Number(a.category_name === lot.category_name) || Number(b.city === lot.city) - Number(a.city === lot.city) || new Date(a.ends_at) - new Date(b.ends_at)).slice(0, 3);
+  if (!related.length) return;
+  relatedNode.hidden = false;
+  relatedCopy.textContent = "Related by published category, location, and ending time. This is not personalized.";
+  related.forEach((row) => { const link = document.createElement("a"); link.className = "btn ghost"; link.href = `./lot.html?id=${encodeURIComponent(row.id)}`; link.textContent = row.title; relatedGrid.appendChild(link); });
+}
 
 function closeReportModal() {
   const overlay = document.getElementById("report-modal-overlay");
@@ -278,6 +289,10 @@ function renderLot(lot) {
     }
 
     renderLot(lot);
+    try {
+      const relatedRows = await window.AuctionApi.apiFetch("/v_lot_feed?select=id,title,ends_at,category_name,city&order=ends_at.asc");
+      renderRelated(lot, relatedRows);
+    } catch {}
     detailNode.style.display = "block";
     loadingNode.style.display = "none";
   } catch {

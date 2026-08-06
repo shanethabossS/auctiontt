@@ -6,12 +6,16 @@ Updated: 2026-08-05
 
 - [x] Production-empty inventory now has an honest launch state with real buyer-account and consignment routes; no preview lots, activity counters, or notification claims are shown.
 - [x] Browse, buyer hub, seller hub, and public buyer guidance are available in the static frontend. Discovery supports current feed fields only: text, category, location, ending-soon, and vehicle-focused inventory.
+- [x] Lot detail includes non-personalized related published lots, using category, location, and ending-time fields only.
+- [x] Native DealzTT feedback submits private support messages to the central contact queue; no embedded TalkFreeTT portal or publicly readable feedback record is used.
+- [x] Fees, calculator, calendar, auction rules, buyer rules, seller rules, support, prohibited-items, privacy, and terms routes are complete, linked, and truthful about the pre-launch state.
+- [x] The implementation rules are locked for all six categories: tiered fees, manual or proxy mode per auction, no reserves, seven-day default, repeatable two-minute soft close, payment in 48 hours, pickup in five business days, and seller release after confirmed pickup or delivery.
 - [x] The seller hub is intentionally limited to consignment preparation and feedback routing until the submission, scheduling, payment, pickup, and settlement workflows work end to end.
-- [ ] Central SSO/auth convergence, buyer activity read APIs, seller operations, scheduled-auction publishing, final fee/rules matrix, vehicle records, and the timed-auction lifecycle remain backend work.
+- [ ] Central-auth buyer activity APIs, seller operations, scheduled-auction publishing, item evidence records, the timed-auction lifecycle, and the TTPay money bridge remain backend work.
 
 ## Product decision
 
-DealzTT should launch as Trinidad and Tobago's trusted local auction marketplace, with vehicles, machinery, repossessions, and liquidation inventory as the wedge. General merchandise remains supported, but the first serious supply push should be vehicle-led because high-value local inventory creates stronger fees, repeat professional buyers, and a clear reason to use an auction platform instead of a classifieds site.
+DealzTT should launch as Trinidad and Tobago's trusted local auction marketplace across all six approved categories. Vehicles and machinery retain specialized evidence and lower fee tiers, while repossessions, liquidations, electronics, and home and business equipment use the same auction lifecycle.
 
 The product should combine proven marketplace mechanics in an original DealzTT experience. We can reproduce ideas and workflows, but should not copy another company's wording, artwork, page composition, proprietary data, or branding.
 
@@ -47,11 +51,11 @@ Incomplete or risky:
 - The frontend is a static multi-page app with buyer and seller preparation hubs; authenticated activity, seller operations, and admin dashboards still require backend read and workflow APIs
 - There is no end-to-end auction lifecycle: approve submission, publish lot, close auction, create order, collect payment, hand off item, settle seller, dispute, refund, relist
 - Vehicle records lack the structured fields buyers need
-- No proxy/max bidding, bid increments by price band, anti-sniping extensions, reserve-state logic, or winner finalization job
+- No proxy/max bidding, bid increments by price band, anti-sniping extensions, or winner finalization job
 - Watchlists exist, but saved searches, alerts, notification preferences, and outbid/ending-soon delivery do not
 - Payments are scaffolding, not a complete protected transaction ledger
-- There is no public fee schedule, seller agreement, buyer rules, prohibited-items policy, privacy policy, dispute policy, or vehicle condition standard
-- Current auction code uses `auctiontt_session`; the platform standard is the central HttpOnly `auth_token` cookie plus the `auth_state` SSO gate. DealzTT should converge on central SSO before launch rather than create a parallel identity system.
+- The frontend publishes planned fees, buyer and seller rules, prohibited-items guidance, and pre-launch privacy and terms notices; final legally approved transaction, dispute, refund, and condition policies still remain
+- Public sign-in and account creation now route to `id.sovdigitalgroup.com`; the unused legacy auction backend still uses `auctiontt_session` and must be replaced by central-auth `/api/dealztt` APIs before protected marketplace actions launch.
 - The repo still contains an old Docker/PostgREST topology. Production must remain Vercel for the web app, the central Express API at `api.sovdigitalgroup.com`, and the managed Postgres database. Do not deploy or rebuild the retired multi-container VPS stack.
 - The central `api-server` working tree contains a large unrelated, intentionally undeployed TTPay bundle. DealzTT backend changes must be isolated and must not trigger a broad API deployment until Shane explicitly approves it.
 
@@ -65,7 +69,7 @@ The latest comparable public annual reports make the scale order clear. Revenue 
 | Copart | FY2025 revenue: $4.647B | Buyer/seller transaction fees, memberships, transport, title processing, storage, bidding and loading fees, plus some owned inventory | Deep vehicle filters, vehicle alerts, deposits/buying power, live lanes, status-rich lot cards |
 | RB Global / Ritchie Bros. / IAA | 2025 revenue: $4.6B; GTV: $16.2B | Buyer and seller fees, ancillary services, inventory sales, logistics and marketplace services | Inspection reports, operational videos, live and timed auctions, enterprise consignor workflows |
 | Bring a Trailer | Private; reported marketplace scale rather than audited public revenue | Seller service tiers and buyer fees | Curated vehicle presentation, editorial-quality listings, public seller Q&A, viewing/test-drive coordination |
-| Catawiki | Private; over 75,000 objects offered weekly | Seller success fee and buyer-protection fee | Submission review, seller verification, reserve guidance, automatic bids, held payments and dispute window |
+| Catawiki | Private; over 75,000 objects offered weekly | Seller success fee and buyer-protection fee | Submission review, seller verification, automatic bids, held payments and dispute window |
 | Whatnot | Private; live-commerce scale rather than audited public revenue | Transaction and payment fees from live and fixed-price commerce | Livestream auctions, pre-bids, quick bid controls, countdown extensions, pinned item and real-time activity |
 
 Sources:
@@ -144,11 +148,11 @@ Goal: remove the empty-market illusion and lock the operating model.
 - Confirm the production API status, database migration state, category seed state, and why `v_lot_feed` is empty.
 - Add a real empty state with "Auctions launching soon," seller-consignment CTA, notification signup, and no fake activity counters.
 - Remove duplicate frontend/demo and backend/preview data sources after real seed inventory is approved.
-- Decide initial categories: Vehicles, Machinery & Tools, Repossessions, Liquidations, Electronics, Home & Business Equipment.
-- Decide fee schedule, bid deposit rules, reserve rules, auction extension window, payment deadline, pickup deadline, cancellation rules, and dispute window.
-- Decide whether DealzTT holds buyer funds through a supported payment flow or only collects platform/deposit fees. Get legal and payment-provider confirmation before promising escrow.
+- Use the six locked launch categories: Vehicles, Machinery & Tools, Repossessions, Liquidations, Electronics, Home & Business Equipment.
+- Implement the locked fee, bidding, extension, payment, and pickup rules; decide cancellation, refund, failed-payment, and dispute handling.
+- Validate that TTPay may collect the full buyer total and release seller proceeds after confirmed handoff; get legal and provider confirmation before promising escrow or buyer protection.
 - Define launch geography and physical inspection/pickup process for Trinidad and Tobago.
-- Converge auth on central SSO using `auth_state` and the HttpOnly `auth_token`; remove the parallel DealzTT password/session path once migration is verified.
+- Keep all public sign-in and account creation on SOV ID; build protected DealzTT APIs against `auth_state` and the HttpOnly `auth_token` rather than the legacy DealzTT session.
 
 Acceptance criteria:
 
@@ -163,10 +167,9 @@ Goal: one real seller can publish a lot and one real buyer can win it safely.
 
 Backend and database:
 
-- Add auction and lot state machines: draft, review, scheduled, live, ended, sold, reserve_not_met, unpaid, paid, ready_for_pickup, collected, disputed, refunded, cancelled, relisted.
+- Add auction and lot state machines: draft, review, scheduled, live, ended, sold, unpaid, paid, ready_for_pickup, collected, disputed, refunded, cancelled, relisted.
 - Add proxy/max bidding with server-calculated price increments.
 - Add configurable anti-sniping: a bid inside the final window extends the auction by a configured duration.
-- Add reserve-met state without exposing the reserve amount.
 - Add an idempotent auction closer that selects the winner, creates an order, and prevents bids after close.
 - Add bid idempotency keys, immutable bid audit records, server timestamps, and rate limits.
 - Add order, payment, fee, settlement, pickup, dispute, and refund records.
@@ -179,7 +182,7 @@ Frontend:
 - Add buyer dashboard: watching, bids, wins, payments, pickups, messages, saved searches.
 - Add seller dashboard: draft/submitted/live/ended lots, orders, pickups, payouts, performance.
 - Add admin operations UI or integrate DealzTT operations into `admin.sovdigitalgroup.com`.
-- Show the next valid bid, max-bid explanation, reserve status, extension rules, total payable estimate, and bid confirmation.
+- Show the next valid bid, max-bid explanation, no-reserve rule, extension rules, total payable estimate, and bid confirmation.
 
 Acceptance criteria:
 
@@ -216,7 +219,7 @@ Enterprise consignment:
 - CSV bulk upload with validation preview
 - Multi-user seller accounts and roles
 - Batch photo/document upload
-- Reserve approval and scheduling workflow
+- Opening-price approval and scheduling workflow
 - Inventory, sell-through, average price, days-to-sale, fee, and settlement reports
 
 Acceptance criteria:
@@ -278,7 +281,7 @@ Goal: compound supply, buyer liquidity, and repeat transactions.
 - Referral credits tied to completed transactions
 - Sold-price content pages for SEO where legally and contractually permitted
 - Abandoned-watch and saved-search lifecycle messaging
-- Second-chance offer for reserve failures or defaulted winners, with audit and seller approval
+- Second-chance offer for defaulted winners, with audit and seller approval
 - Recommendation feed based on category, location, price band, and watch/bid history
 - Partner services: inspections, transport, financing introductions, document processing, and insurance referrals
 
@@ -318,7 +321,6 @@ Each slice should be independently testable and deployable.
 - Two bids arriving at close time
 - Anti-sniping extension under load
 - Max-bid tie behavior and increment boundaries
-- Reserve met/not met
 - Duplicate bid and payment requests
 - Winner fails to pay
 - Seller cancels before and after first bid
@@ -355,7 +357,7 @@ Track after launch:
 - Approved-lot supply and active sellers
 - Watch-to-bid and bid-to-win conversion
 - Unique bidders per lot
-- Sell-through rate and reserve-failure rate
+- Sell-through rate and seller cancellation rate
 - Gross merchandise value and net take rate
 - Payment completion time and default rate
 - Pickup completion time
@@ -363,17 +365,19 @@ Track after launch:
 - Repeat buyer and seller rate
 - Notification delivery and live-room reliability
 
-## Decisions Shane needs to lock before Phase 1 is complete
+## Locked launch decisions
 
-1. Does DealzTT handle the full purchase amount, a deposit only, or platform fees only at launch?
-2. What are the buyer fee, seller fee, minimum fee, listing fee, and featured fee by category?
-3. Which seller segment provides the first 50 real lots?
-4. Are individual vehicle sellers allowed at launch, or only verified dealers/fleets/repo partners?
-5. What are the default auction length, soft-close window, extension duration, payment deadline, and pickup deadline?
-6. Who performs vehicle inspections and document checks?
-7. Who operates support and dispute resolution during launch auctions?
-8. Should the first public release include general goods, or lead with vehicles/machinery/repossessions only?
+1. DealzTT targets collection of the full buyer total through TTPay.
+2. Vehicles and machinery use a 3% buyer fee and 5% seller fee; other categories use a 5% buyer fee and 7.5% seller fee. Listings and featured placement are free at launch.
+3. Verified businesses and individuals may sell, subject to seller and lot approval.
+4. All six approved categories launch under the same lifecycle.
+5. Each auction selects manual or proxy bidding, uses no reserve, defaults to seven days, and repeats a two-minute extension after a valid bid in the final two minutes.
+6. Payment is due within 48 hours and pickup within five business days. Seller release follows confirmed pickup or delivery.
+
+Still requires an operating owner before transaction launch: secure seller and ownership verification, category evidence standards, support and dispute staffing, failed-payment handling, refunds, holiday calculation, delivery proof, and approval that TTPay may collect and hold marketplace funds for release.
 
 ## Recommended immediate next move
 
-After the unrelated held TTPay bundle is safely deployed or otherwise isolated, implement DealzTT central SSO convergence and the timed-auction lifecycle in a clean, separately reviewed api-server release. That release must add the state machine, authenticated buyer/seller read APIs, bid rules, closing, orders, fees, and audit trail before any public bid, payment, pickup, or settlement action is enabled.
+Implement a new central-auth `/api/dealztt` module in an isolated api-server worktree rather than extending the parallel `auctiontt_session` route. The first separately reviewed release should add the state machine, seller and lot approval, authenticated buyer and seller APIs, manual and proxy bidding, soft close, order creation, fee snapshots, and audit trail, stopping at `payment_due`.
+
+The TTPay bridge is a separate gated release because DealzTT, central identity, and TTPay use separate database pools. It requires durable idempotency, signed payment correlation, reconciliation, refunds, manual exceptions, and provider/legal approval for marketplace custody and seller release. Do not treat the existing generic TTPay checkout as escrow or deploy it with the held TTPay bundle without explicit production approval.

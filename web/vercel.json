@@ -25,14 +25,16 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https://api.sovdigitalgroup.com http://127.0.0.1:33001 http://127.0.0.1:3001; frame-src https://talkfreett.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
+          "value": "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https://api.sovdigitalgroup.com http://127.0.0.1:33001 http://127.0.0.1:3001; frame-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
         }
       ]
     }
   ],
   "redirects": [
-    { "source": "/login", "destination": "/signin.html", "statusCode": 301 },
-    { "source": "/register", "destination": "/signup.html", "statusCode": 301 }
+    { "source": "/login", "destination": "https://id.sovdigitalgroup.com/", "statusCode": 302 },
+    { "source": "/register", "destination": "https://id.sovdigitalgroup.com/", "statusCode": 302 },
+    { "source": "/signin.html", "destination": "https://id.sovdigitalgroup.com/", "statusCode": 302 },
+    { "source": "/signup.html", "destination": "https://id.sovdigitalgroup.com/", "statusCode": 302 }
   ],
   "rewrites": [
     {
@@ -42,10 +44,6 @@
     {
       "source": "/upload-image",
       "destination": "https://api.sovdigitalgroup.com/auction/upload-image"
-    },
-    {
-      "source": "/auth/(.*)",
-      "destination": "https://api.sovdigitalgroup.com/auction/auth/$1"
     },
     {
       "source": "/time/now",

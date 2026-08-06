@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Send Feedback — DealzTT Trinidad & Tobago Auctions</title>
-  <meta name="description" content="Send feedback to the DealzTT team — bug reports, suggestions, listing issues, verification questions, payment concerns. We reply within 1 business day." />
+  <meta name="description" content="Send feedback to the DealzTT team about bugs, ideas, listing concerns, verification, payment, and other marketplace questions." />
   <meta name="robots" content="index,follow" />
   <link rel="canonical" href="https://dealztt.com/feedback.html" />
   <meta property="og:title" content="Feedback — DealzTT" />
@@ -25,10 +25,10 @@
       <a href="./how-it-works.html">How It Works</a>
       <a href="./sell.html">Sell</a>
       <a href="./feedback.html" class="active">Feedback</a>
-      <a data-auth-pill href="./signin.html">Sign In</a>
-      <button data-logout class="btn ghost btn-sm" style="display:none">Logout</button>
+      <a data-auth-pill href="https://id.sovdigitalgroup.com/">Sign In</a>
+
     </nav>
-    <button class="nav-hamburger" id="nav-toggle" aria-label="Toggle menu">
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </header>
@@ -40,38 +40,19 @@
     <a href="./sell.html">Sell</a>
     <a href="./feedback.html">Feedback</a>
     <div class="nav-mobile-divider"></div>
-    <a data-auth-pill-mobile href="./signin.html">Sign In</a>
-    <button data-logout-mobile class="btn ghost" style="display:none">Logout</button>
+    <a data-auth-pill-mobile href="https://id.sovdigitalgroup.com/">Sign In</a>
+
   </div>
 
-  <section class="hero">
-    <div>
-      <p class="eyebrow">DealzTT Feedback Hub</p>
-      <h1>DealzTT Feedback Portal</h1>
-      <p class="hero-text">Use this portal for Bug, Suggestion, Bad listing/report, Verification issue, Payment issue, and Other.</p>
-    </div>
-  </section>
-
   <main class="page-main">
-    <section class="card" style="padding:14px">
-      <div style="border-radius:16px; overflow:hidden; border:1px solid rgba(255,255,255,0.13)">
-        <iframe
-          title="DealzTT Feedback"
-          src="https://talkfreett.com/feedback?embed=1&site=auctiontt"
-          style="width:100%; height:78vh; border:0"
-        ></iframe>
-      </div>
-      <p class="subtle" style="margin-top:12px; margin-bottom:0">
-        <a href="https://talkfreett.com/feedback?embed=1&site=auctiontt" target="_blank" rel="noreferrer" style="font-weight:700">
-          Open full feedback portal
-        </a>
-      </p>
-    </section>
+    <section class="page-intro"><p class="eyebrow">DealzTT feedback</p><h1>Send a private message to support.</h1><p>Your message is sent privately to DealzTT support. Do not include passwords, payment details, one-time codes, or unredacted identity and ownership documents.</p></section>
+    <section class="card"><form id="feedback-form" class="stack-form"><label>Your name<input name="name" maxlength="120" autocomplete="name" required></label><label>Your email<input name="email" type="email" maxlength="160" autocomplete="email" required></label><label>Feedback type<select name="type" required><option>Bug</option><option>Suggestion</option><option>Bad listing or report</option><option>Verification issue</option><option>Payment issue</option><option>Other</option></select></label><label>Subject<input name="subject" minlength="5" maxlength="160" required></label><label>Details<textarea name="details" rows="6" minlength="20" maxlength="3600" required></textarea></label><label>Related lot reference (optional)<input name="lot_reference" maxlength="120"></label><button class="btn" type="submit">Send private feedback</button><p id="feedback-status" class="subtle" role="status" aria-live="polite"></p></form></section>
   </main>
 
-  <footer class="site-footer"><p><a href="./browse.html">Browse</a> <a href="./how-it-works.html">How It Works</a> <a href="./buyer.html">Buyer Hub</a></p></footer>
+  <footer class="site-footer"><p><a href="./fees.html">Fees</a> <a href="./calendar.html">Calendar</a> <a href="./buyer-rules.html">Buyer Rules</a> <a href="./seller-rules.html">Seller Rules</a> <a href="./support.html">Safety</a> <a href="./privacy.html">Privacy</a> <a href="./terms.html">Terms</a> <a href="./prohibited-items.html">Prohibited Items</a></p></footer>
 
   <script src="./js/api.js"></script>
   <script src="./js/common.js"></script>
+  <script src="./js/feedback.js"></script>
 </body>
 </html>

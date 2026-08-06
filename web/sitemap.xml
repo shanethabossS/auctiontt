@@ -20,15 +20,19 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  <url><loc>https://dealztt.com/fees.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://dealztt.com/calendar.html</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://dealztt.com/rules.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://dealztt.com/buyer-rules.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://dealztt.com/seller-rules.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://dealztt.com/support.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://dealztt.com/prohibited-items.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://dealztt.com/privacy.html</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://dealztt.com/terms.html</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
   <url>
     <loc>https://dealztt.com/sell.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://dealztt.com/signup.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://dealztt.com/feedback.html</loc>

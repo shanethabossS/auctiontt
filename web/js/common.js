@@ -30,38 +30,11 @@ function timeLeft(iso) {
 }
 
 function updateAuthPills() {
-  if (!window.AuctionApi) return;          // api.js not loaded yet
-  const user = window.AuctionApi.getSessionUser();
-
-  // Desktop + mobile auth pills
+  const ssoUrl = "https://id.sovdigitalgroup.com/";
   const pills = document.querySelectorAll("[data-auth-pill], [data-auth-pill-mobile]");
   pills.forEach((pill) => {
-    if (!user) {
-      pill.textContent = "Sign In";
-      pill.href = "./signin.html";
-      return;
-    }
-    const isSeller = user.role === "seller";
-    pill.textContent = isSeller ? "Seller Hub" : "Buyer Hub";
-    pill.href = isSeller ? "./sell.html" : "./buyer.html";
-  });
-
-  // Desktop + mobile logout buttons
-  const logoutButtons = document.querySelectorAll("[data-logout], [data-logout-mobile]");
-  logoutButtons.forEach((button) => {
-    button.style.display = user ? "inline-block" : "none";
-    button.onclick = async () => {
-      try {
-        await fetch("/auth/logout", {
-          method: "POST",
-          credentials: "include",
-        });
-      } catch {
-        // Ignore network issues and clear local session anyway.
-      }
-      window.AuctionApi.clearSessionUser();
-      window.location.href = "./index.html";
-    };
+    pill.textContent = "Sign In";
+    pill.href = ssoUrl;
   });
 }
 
@@ -87,7 +60,10 @@ function initMobileNav() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", initMobileNav);
+document.addEventListener("DOMContentLoaded", () => {
+  initMobileNav();
+  updateAuthPills();
+});
 
 window.AuctionUi = {
   money,

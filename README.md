@@ -1,6 +1,6 @@
 # DealzTT
 
-DealzTT is Trinidad & Tobago's developing local auction marketplace, positioned first around vehicles, machinery, repossessions, liquidations, and selected general goods.
+DealzTT is Trinidad & Tobago's developing local auction marketplace for vehicles, machinery, repossessions, liquidations, electronics, and home and business equipment.
 
 Production: [dealztt.com](https://dealztt.com/)
 
@@ -16,13 +16,15 @@ The retired AUCTIONSITE Docker/PostgREST stack is not the production deployment 
 ## Web pages
 
 - `index.html` — launch state and published marketplace overview
-- `browse.html` — live-feed discovery by category, location, ending time, and vehicle-focused inventory
+- `browse.html` — real-feed discovery by category, location, ending time, and vehicle-focused inventory
 - `categories.html` — live category catalogue
-- `lot.html` — published lot detail and reporting route
-- `buyer.html` — buyer account preparation hub
-- `sell.html` — consignment preparation hub
-- `how-it-works.html` — public buyer, fee, and trust guidance
-- `signin.html`, `signup.html`, `feedback.html` — account and feedback routes
+- `lot.html` — published lot detail, reporting, and real-feed related lots
+- `buyer.html`, `sell.html` — buyer and consignment preparation hubs
+- `how-it-works.html`, `fees.html`, `calendar.html`, `rules.html` — marketplace guidance and planning disclosures
+- `buyer-rules.html`, `seller-rules.html`, `support.html`, `prohibited-items.html` — responsibilities and safety guidance
+- `privacy.html`, `terms.html` — truthful pre-launch notices pending final legal approval
+- `signin.html`, `signup.html` — SOV ID handoff fallbacks; production redirects directly to `id.sovdigitalgroup.com`
+- `feedback.html` — native DealzTT feedback form backed by the private central support queue
 
 ## Local preview
 
@@ -37,9 +39,7 @@ Then open `http://127.0.0.1:4173/`. The local preview is for static layout and l
 ## Validation
 
 ```powershell
-node --check web\js\home.js
-node --check web\js\browse.js
-node --check web\js\lot.js
+Get-ChildItem web\js\*.js | ForEach-Object { node --check $_.FullName }
 git diff --check
 ```
 
@@ -47,8 +47,10 @@ Run a local link crawl before release so every internal navigation, footer, and 
 
 ## Release status
 
-The frontend only renders the real live feed and never substitutes preview inventory. Buyer activity, seller operations, auction schedules, bid rules, auction closing, orders, fees, payments, pickup, settlement, and disputes still require central API and database work.
+The frontend only renders the real live feed and never substitutes preview inventory. It publishes the locked planning model for all six categories: category-tiered fees, manual or proxy mode per auction, no reserves, seven-day default auctions, repeatable two-minute soft close, 48-hour payment deadline, and five-business-day pickup deadline. These are explicitly marked as planned until the backend enforces them.
 
-The central API deploy is currently held because its working tree contains unrelated, intentionally undeployed TTPay changes. Keep future DealzTT backend work isolated and separately reviewed until Shane explicitly approves a release.
+Buyer activity, seller operations, scheduled-auction data, bidding, auction closing, orders, TTPay collection, pickup or delivery confirmation, settlement, and disputes still require central API and database work.
+
+The central API release remains held because TTPay money work has separate production guardrails. Keep DealzTT backend work isolated and separately reviewed until Shane explicitly approves that release.
 
 See [DEALZTT_FINISH_PLAN.md](./DEALZTT_FINISH_PLAN.md) for the product roadmap and remaining backend milestones.
