@@ -21,6 +21,8 @@
     <nav>
       <a href="./index.html">Home</a>
       <a href="./categories.html">Categories</a>
+      <a href="./browse.html">Browse</a>
+      <a href="./how-it-works.html">How It Works</a>
       <a href="./sell.html">Sell</a>
       <a href="./feedback.html">Feedback</a>
       <a data-auth-pill href="./signin.html" class="active">Sign In</a>
@@ -33,6 +35,8 @@
   <div class="nav-mobile" id="nav-mobile">
     <a href="./index.html">Home</a>
     <a href="./categories.html">Categories</a>
+    <a href="./browse.html">Browse</a>
+    <a href="./how-it-works.html">How It Works</a>
     <a href="./sell.html">Sell</a>
     <a href="./feedback.html">Feedback</a>
     <div class="nav-mobile-divider"></div>
@@ -51,12 +55,12 @@
       </div>
       <p class="auth-divider">or create account with email</p>
       <form id="signup-form" class="stack-form">
-        <input name="full_name" type="text" placeholder="Full name" required />
-        <input name="email" type="email" placeholder="Email" required />
-        <input name="phone" type="tel" placeholder="Phone number" />
-        <input name="password" type="password" placeholder="Password (min 8 chars)" minlength="8" required />
-        <input name="confirm_password" type="password" placeholder="Confirm password" minlength="8" required />
-        <select name="role">
+        <input name="full_name" type="text" placeholder="Full name" aria-label="Full name" required />
+        <input name="email" type="email" placeholder="Email" aria-label="Email" required />
+        <input name="phone" type="tel" placeholder="Phone number" aria-label="Phone number" />
+        <input name="password" type="password" placeholder="Password (min 8 chars)" aria-label="Password" minlength="8" required />
+        <input name="confirm_password" type="password" placeholder="Confirm password" aria-label="Confirm password" minlength="8" required />
+        <select name="role" aria-label="Account type">
           <option value="buyer">Buyer</option>
           <option value="seller">Seller</option>
         </select>
@@ -67,6 +71,8 @@
 
     <p id="auth-message" class="subtle"></p>
   </main>
+
+  <footer class="site-footer"><p><a href="./browse.html">Browse</a> <a href="./how-it-works.html">How It Works</a> <a href="./buyer.html">Buyer Hub</a></p></footer>
 
   <script src="./js/api.js"></script>
   <script src="./js/common.js"></script>

@@ -1,5 +1,8 @@
 const loadingNode = document.getElementById("lot-loading");
 const detailNode = document.getElementById("lot-detail");
+const errorNode = document.getElementById("lot-error");
+const errorTitleNode = document.getElementById("lot-error-title");
+const errorMessageNode = document.getElementById("lot-error-message");
 const imageNode = document.getElementById("lot-image");
 const categoryNode = document.getElementById("lot-category");
 const titleNode = document.getElementById("lot-title");
@@ -73,6 +76,7 @@ function openReportModal(lot) {
 
   const reason = document.createElement("select");
   reason.required = true;
+  reason.setAttribute("aria-label", "Report reason");
   reason.style.cssText = "padding:10px 12px;border:1px solid #d1d5db;border-radius:12px;";
   [
     ["", "Select a reason"],
@@ -95,11 +99,13 @@ function openReportModal(lot) {
   details.rows = 4;
   details.maxLength = 2000;
   details.placeholder = "Additional details (optional)";
+  details.setAttribute("aria-label", "Additional report details");
   details.style.cssText = "padding:10px 12px;border:1px solid #d1d5db;border-radius:12px;";
 
   const email = document.createElement("input");
   email.type = "email";
   email.placeholder = "Your email (optional if signed out)";
+  email.setAttribute("aria-label", "Contact email");
   email.style.cssText = "padding:10px 12px;border:1px solid #d1d5db;border-radius:12px;";
 
   const statusNode = document.createElement("p");
@@ -159,6 +165,14 @@ function getLotId() {
   return params.get("id");
 }
 
+function showLotUnavailable(title, message) {
+  loadingNode.style.display = "none";
+  detailNode.style.display = "none";
+  errorTitleNode.textContent = title;
+  errorMessageNode.textContent = message;
+  errorNode.hidden = false;
+}
+
 function lotHref(id) {
   return `${window.location.origin}/lot.html?id=${encodeURIComponent(id)}`;
 }
@@ -188,7 +202,6 @@ function renderLot(lot) {
   const isVerifiedSeller = Boolean(lot.seller_verified);
   const bidCount = Number(lot.bid_count || 0);
   const timeText = window.AuctionUi.timeLeft(lot.ends_at);
-  const urgencyText = bidCount >= 10 ? "Competitive lot" : "Steady bidding";
   const fullDescription = lot.description?.trim() || "This lot is live in the DealzTT marketplace. Review the current bid, seller details, and location before jumping into bidding.";
 
   imageNode.src = lot.image_url || "https://images.unsplash.com/photo-1499696010180-025ef6e1a8f9?auto=format&fit=crop&w=1200&q=80";
@@ -200,10 +213,10 @@ function renderLot(lot) {
   locationNode.textContent = `${lot.city || ""} ${lot.state || ""}`.trim() || "Location not specified";
   bidsNode.textContent = `${bidCount} bids`;
   descriptionNode.textContent = fullDescription;
-  statusBadgeNode.textContent = timeText === "Ended" ? "Auction ended" : "Live bidding";
+  statusBadgeNode.textContent = timeText === "Ended" ? "Auction ended" : "Published lot";
   statusBadgeNode.className = `chip ${timeText === "Ended" ? "chip-red" : "chip-green"}`;
   regionNode.textContent = `${lot.city || "Trinidad & Tobago"}${lot.state ? `, ${lot.state}` : ""}`;
-  urgencyNode.textContent = urgencyText;
+  urgencyNode.textContent = `${bidCount} recorded bid${bidCount === 1 ? "" : "s"}`;
   sellerStatusNode.textContent = isVerifiedSeller ? "Verified seller" : "Marketplace seller";
   reportLink.href = "#";
   reportLink.onclick = (event) => {
@@ -250,18 +263,24 @@ function renderLot(lot) {
   try {
     window.AuctionUi.updateAuthPills();
     const id = getLotId();
-    if (!id) throw new Error("Missing lot id.");
+    if (!id) {
+      showLotUnavailable("Choose a published lot to view its details.", "Browse the published DealzTT catalogue to find available lots.");
+      return;
+    }
 
     const rows = await window.AuctionApi.apiFetch(
       `/v_lot_feed?select=id,title,description,image_url,current_bid,starting_bid,bid_count,ends_at,city,state,seller_name,seller_verified,category_name&id=eq.${id}`
     );
     const lot = Array.isArray(rows) ? rows[0] : null;
-    if (!lot) throw new Error("Lot not found.");
+    if (!lot) {
+      showLotUnavailable("This lot is no longer available.", "It may have ended or been removed from the published catalogue. Browse current lots instead.");
+      return;
+    }
 
     renderLot(lot);
     detailNode.style.display = "block";
     loadingNode.style.display = "none";
-  } catch (err) {
-    loadingNode.textContent = `Failed to load lot: ${err.message || err}`;
+  } catch {
+    showLotUnavailable("Lot details could not be loaded.", "Please try again shortly or return to the published auction catalogue.");
   }
 })();

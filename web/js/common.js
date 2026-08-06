@@ -41,8 +41,9 @@ function updateAuthPills() {
       pill.href = "./signin.html";
       return;
     }
-    pill.textContent = `${user.full_name.split(" ")[0]} (${user.role})`;
-    pill.href = "./sell.html";
+    const isSeller = user.role === "seller";
+    pill.textContent = isSeller ? "Seller Hub" : "Buyer Hub";
+    pill.href = isSeller ? "./sell.html" : "./buyer.html";
   });
 
   // Desktop + mobile logout buttons
@@ -68,6 +69,7 @@ function initMobileNav() {
   const toggle = document.getElementById("nav-toggle");
   const drawer = document.getElementById("nav-mobile");
   if (!toggle || !drawer) return;
+  if (!toggle.hasAttribute("aria-expanded")) toggle.setAttribute("aria-expanded", "false");
 
   toggle.addEventListener("click", () => {
     const isOpen = drawer.classList.toggle("open");

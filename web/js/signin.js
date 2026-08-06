@@ -74,7 +74,7 @@ async function handleGoogleCallback() {
 
     window.history.replaceState({}, "", window.location.pathname);
     setMessage("Google sign-in successful.");
-    window.location.href = user.role === "seller" ? "./sell.html" : "./index.html";
+    window.location.href = user.role === "seller" ? "./sell.html" : "./buyer.html";
   } catch (err) {
     setMessage(`Google sign-in failed: ${err.message}`, true);
     if (googleButton) googleButton.disabled = false;
@@ -112,7 +112,7 @@ if (signInForm) {
 
       window.AuctionApi.setSessionUser({ id: user.id, full_name: user.full_name, email: user.email, role: user.role });
       setMessage("Signed in successfully.");
-      window.location.href = user.role === "seller" ? "./sell.html" : "./index.html";
+      window.location.href = user.role === "seller" ? "./sell.html" : "./buyer.html";
     } catch (err) {
       setMessage(`Sign in failed: ${err.message}`, true);
     }

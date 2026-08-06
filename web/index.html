@@ -84,6 +84,8 @@
     <nav>
       <a href="./index.html" class="active">Home</a>
       <a href="./categories.html">Categories</a>
+      <a href="./browse.html">Browse</a>
+      <a href="./how-it-works.html">How It Works</a>
       <a href="./sell.html">Sell</a>
       <a href="./feedback.html">Feedback</a>
       <a data-auth-pill href="./signin.html">Sign In</a>
@@ -96,6 +98,8 @@
   <div class="nav-mobile" id="nav-mobile">
     <a href="./index.html">Home</a>
     <a href="./categories.html">Categories</a>
+    <a href="./browse.html">Browse</a>
+    <a href="./how-it-works.html">How It Works</a>
     <a href="./sell.html">Sell</a>
     <a href="./feedback.html">Feedback</a>
     <div class="nav-mobile-divider"></div>
@@ -106,13 +110,13 @@
   <section class="hero hero-trinidad">
     <div class="hero-copy">
       <p class="eyebrow">DealzTT | Trinidad & Tobago</p>
-      <h1>Bid on the good stuff before somebody else in T&T does.</h1>
-      <p class="hero-text">DealzTT brings local auctions, seller credibility, and fast category discovery into one marketplace that feels ready to use, not half-finished.</p>
+      <h1>Local auction inventory is preparing to launch in T&amp;T.</h1>
+      <p class="hero-text">DealzTT is building a clearer way to discover vehicles, machinery, repossessions, liquidations, and local goods as approved lots are published.</p>
 
       <div class="hero-highlights" aria-label="Marketplace highlights">
         <div class="hero-highlight">
-          <span class="hero-highlight-value">24h</span>
-          <span class="hero-highlight-label">Fast-moving drops</span>
+          <span class="hero-highlight-value">Timed</span>
+          <span class="hero-highlight-label">Auction format</span>
         </div>
         <div class="hero-highlight">
           <span class="hero-highlight-value">TTD</span>
@@ -120,49 +124,61 @@
         </div>
         <div class="hero-highlight">
           <span class="hero-highlight-value">Island-wide</span>
-          <span class="hero-highlight-label">Pickup-ready deals</span>
+          <span class="hero-highlight-label">Local catalogue</span>
         </div>
       </div>
 
       <form id="search-form" class="search-panel">
         <div class="field-wrap">
-          <input id="category-search" type="text" placeholder="Type category (e.g. electronics, tools, vehicle parts...)" autocomplete="off" />
+          <input id="category-search" type="text" placeholder="Type category (e.g. electronics, tools, vehicle parts...)" autocomplete="off" aria-label="Search by category" />
           <div id="category-hint" class="hint-list"></div>
         </div>
-        <input id="location-search" type="text" placeholder="Area in Trinidad or Tobago" />
+        <input id="location-search" type="text" placeholder="Area in Trinidad or Tobago" aria-label="Search by location" />
         <button class="btn" type="submit">Search</button>
       </form>
 
       <p id="results-note" class="subtle">Loading live marketplace lots...</p>
     </div>
-    <aside class="stats-card hero-sidecard">
+    <aside class="stats-card hero-sidecard" id="marketplace-pulse">
       <div>
-        <p class="eyebrow">Live Pulse</p>
-        <h3>What is moving right now</h3>
+        <p class="eyebrow" id="pulse-eyebrow">Live Pulse</p>
+        <h3 id="pulse-title">What is moving right now</h3>
       </div>
-      <div class="pulse-metrics">
+      <div class="pulse-metrics" id="pulse-metrics">
         <p><strong id="stat-live">0</strong> live lots</p>
         <p><strong id="stat-hot">0</strong> hot lots</p>
         <p><strong id="stat-cats">0</strong> categories</p>
       </div>
-      <div class="trust-panel">
+      <div class="trust-panel" id="trust-panel">
         <p class="trust-title">Built for local confidence</p>
         <ul class="plain-list trust-list">
-          <li>Seller identity and watchlist tools included</li>
-          <li>Fast feedback path for suspicious lots</li>
-          <li>Responsive bidding flow that works on mobile</li>
+          <li>Published seller labels and location details appear on each lot</li>
+          <li>Use the reporting route when public lot information needs review</li>
+          <li>Browse and lot records are designed for mobile screens</li>
         </ul>
       </div>
     </aside>
   </section>
 
   <main class="page-main">
-    <section>
+    <section class="launch-state" id="launch-state" hidden aria-labelledby="launch-state-title">
+      <div class="launch-state-copy">
+        <p class="eyebrow">Launching soon</p>
+        <h2 id="launch-state-title">The first DealzTT auctions are being prepared.</h2>
+        <p id="launch-state-message">There are no open lots right now. Create a buyer account so you are ready when lots open, or submit a consignment to help shape the first drops.</p>
+      </div>
+      <div class="launch-state-actions">
+        <a class="btn" href="./signup.html">Create buyer account</a>
+        <a class="btn ghost" href="./sell.html">Submit a consignment</a>
+      </div>
+    </section>
+
+    <section id="spotlight-section">
       <h2>Spotlight Lots</h2>
       <div id="spotlight-grid" class="lot-grid lot-grid-3"></div>
     </section>
 
-    <section>
+    <section id="marketplace-section">
       <h2>Marketplace</h2>
       <div id="lot-grid" class="lot-grid"></div>
     </section>
@@ -175,18 +191,18 @@
       <div class="feature-band-grid">
         <article class="feature-card">
           <p class="chip chip-red">Hot lots</p>
-          <h3>See urgency before you click</h3>
-          <p class="subtle">We surface active bidding energy, remaining time, and lot momentum so users can decide quickly.</p>
+          <h3>See the details that are published</h3>
+          <p class="subtle">Lot cards show the published price, end time, seller label, and location when inventory is available.</p>
         </article>
         <article class="feature-card">
           <p class="chip">Buyer-ready</p>
-          <h3>Mobile actions stay usable</h3>
-          <p class="subtle">Bid, watchlist, and payment actions stack cleanly on small screens instead of collapsing into awkward overflow.</p>
+          <h3>Mobile browsing stays usable</h3>
+          <p class="subtle">Search, browse, and lot-detail views are designed to work cleanly on small screens.</p>
         </article>
         <article class="feature-card">
-          <p class="chip chip-green">Seller trust</p>
-          <h3>Local marketplace cues matter</h3>
-          <p class="subtle">Verified sellers, region labels, and fast report links make the platform feel safer and more complete.</p>
+          <p class="chip chip-green">Lot review</p>
+          <h3>Report public information that needs review</h3>
+          <p class="subtle">Published seller labels, region details, and reporting links help buyers review each visible lot carefully.</p>
         </article>
       </div>
     </section>
@@ -195,8 +211,8 @@
       <h2 id="why-dealztt">Why buyers and sellers use DealzTT</h2>
       <p>
         DealzTT helps people across Trinidad &amp; Tobago discover local auction lots, compare categories quickly,
-        and connect with seller deals in one place. From electronics and tools to auto parts and household items,
-        the platform is built for fast local bidding and category-based discovery.
+        and review published inventory in one place. From electronics and tools to vehicle-related inventory and household items,
+        the platform is being prepared for category-based discovery before auction actions are enabled.
       </p>
     </section>
   </main>
@@ -218,13 +234,13 @@
 
         <div class="lot-actions">
           <form class="bid-form inline-form">
-            <input class="bidder-name" type="text" placeholder="Bidder" required />
-            <input class="bid-amount" type="number" min="1" step="1" placeholder="Amount" required />
+            <input class="bidder-name" type="text" placeholder="Bidder" aria-label="Bidder name" required />
+            <input class="bid-amount" type="number" min="1" step="1" placeholder="Amount" aria-label="Bid amount" required />
             <button class="btn" type="submit">Bid</button>
           </form>
 
           <form class="watch-form inline-form">
-            <input class="watch-email" type="email" placeholder="Email watchlist" required />
+            <input class="watch-email" type="email" placeholder="Email watchlist" aria-label="Watchlist email" required />
             <button class="btn ghost" type="submit">Watch</button>
           </form>
 
@@ -238,7 +254,7 @@
   </template>
 
   <footer class="site-footer">
-    <p>DealzTT &mdash; Trinidad & Tobago's local auction marketplace. Powered by <a href="https://sovdigitalgroup.com" target="_blank" rel="noreferrer">SOV Digital Group</a>.</p>
+    <p>DealzTT &mdash; Trinidad & Tobago's local auction marketplace. <a href="./browse.html">Browse</a> <a href="./how-it-works.html">How It Works</a> Powered by <a href="https://sovdigitalgroup.com" target="_blank" rel="noreferrer">SOV Digital Group</a>.</p>
   </footer>
 
   <script src="./js/api.js"></script>

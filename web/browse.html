@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Browse Auctions | DealzTT Trinidad & Tobago</title>
+  <meta name="description" content="Browse active DealzTT auctions by category, location, ending time, and vehicle-focused inventory across Trinidad and Tobago." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://dealztt.com/browse.html" />
+  <meta property="og:title" content="Browse Auctions | DealzTT" />
+  <meta property="og:description" content="Find active auctions and vehicle-focused inventory on DealzTT." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Public+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./index.html">DealzTT</a>
+    <nav>
+      <a href="./index.html">Home</a>
+      <a href="./categories.html">Categories</a>
+      <a href="./browse.html" class="active">Browse</a>
+      <a href="./how-it-works.html">How It Works</a>
+      <a href="./sell.html">Sell</a>
+      <a href="./feedback.html">Feedback</a>
+      <a data-auth-pill href="./signin.html">Sign In</a>
+      <button data-logout class="btn ghost btn-sm" style="display:none">Logout</button>
+    </nav>
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+  <div class="nav-mobile" id="nav-mobile">
+    <a href="./index.html">Home</a>
+    <a href="./categories.html">Categories</a>
+    <a href="./browse.html">Browse</a>
+    <a href="./how-it-works.html">How It Works</a>
+    <a href="./sell.html">Sell</a>
+    <a href="./feedback.html">Feedback</a>
+    <div class="nav-mobile-divider"></div>
+    <a data-auth-pill-mobile href="./signin.html">Sign In</a>
+    <button data-logout-mobile class="btn ghost" style="display:none">Logout</button>
+  </div>
+
+  <main class="page-main">
+    <section class="page-intro browse-intro">
+      <p class="eyebrow">Auction discovery</p>
+      <h1>Find the next DealzTT lot.</h1>
+      <p>Search currently published auction lots by category and location. Vehicle, machinery, repossession, and liquidation inventory is highlighted as it becomes available.</p>
+    </section>
+
+    <section class="vehicle-focus" aria-labelledby="vehicle-focus-title">
+      <div>
+        <p class="eyebrow">High-value inventory</p>
+        <h2 id="vehicle-focus-title">Vehicles, machinery, repossessions, and liquidations</h2>
+        <p class="subtle">These inventory types need more condition and document detail before bidding. Use the finder to see published lots; inspection records and sale schedules will appear only when the auction team publishes them.</p>
+      </div>
+      <div class="quick-filter-group" aria-label="Vehicle-focused filters">
+        <button type="button" class="chip filter-chip" data-focus="vehicle">Vehicles</button>
+        <button type="button" class="chip filter-chip" data-focus="machinery">Machinery</button>
+        <button type="button" class="chip filter-chip" data-focus="repossession">Repossessions</button>
+        <button type="button" class="chip filter-chip" data-focus="liquidation">Liquidations</button>
+      </div>
+    </section>
+
+    <section class="card browse-filters" aria-labelledby="browse-filter-title">
+      <h2 id="browse-filter-title">Auction Finder</h2>
+      <form id="browse-form" class="filter-form">
+        <label>
+          <span>Search lots</span>
+          <input id="browse-search" type="search" placeholder="Title, seller, or keyword" autocomplete="off" />
+        </label>
+        <label>
+          <span>Category</span>
+          <select id="browse-category"><option value="">All categories</option></select>
+        </label>
+        <label>
+          <span>Location</span>
+          <input id="browse-location" type="search" placeholder="Town, city, Trinidad, or Tobago" autocomplete="off" />
+        </label>
+        <label>
+          <span>Timing</span>
+          <select id="browse-timing">
+            <option value="all">All active lots</option>
+            <option value="ending">Ending within 24 hours</option>
+            <option value="upcoming">Upcoming schedules</option>
+          </select>
+        </label>
+        <button class="btn" type="submit">Update results</button>
+      </form>
+      <p id="browse-status" class="subtle" role="status" aria-live="polite">Loading published auction inventory...</p>
+    </section>
+
+    <section id="browse-empty" class="empty-state" hidden aria-labelledby="browse-empty-title">
+      <p class="eyebrow">No published lots</p>
+      <h2 id="browse-empty-title">There are no active lots matching this view.</h2>
+      <p id="browse-empty-copy">DealzTT will show auction cards here as approved inventory is published. You can create a buyer account now or submit a consignment for the launch catalogue.</p>
+      <div class="launch-state-actions">
+        <a class="btn" href="./signup.html">Create buyer account</a>
+        <a class="btn ghost" href="./sell.html">Submit a consignment</a>
+      </div>
+    </section>
+
+    <section id="browse-results-section" aria-labelledby="browse-results-title">
+      <div class="section-row">
+        <h2 id="browse-results-title">Published lots</h2>
+        <p id="browse-count" class="subtle"></p>
+      </div>
+      <div id="browse-grid" class="lot-grid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>DealzTT &mdash; Trinidad & Tobago's local auction marketplace. <a href="./browse.html">Browse</a> <a href="./how-it-works.html">How It Works</a> <a href="./buyer.html">Buyer Hub</a> Powered by <a href="https://sovdigitalgroup.com" target="_blank" rel="noreferrer">SOV Digital Group</a>.</p>
+  </footer>
+
+  <script src="./js/api.js"></script>
+  <script src="./js/common.js"></script>
+  <script src="./js/browse.js"></script>
+</body>
+</html>

@@ -74,7 +74,7 @@ async function handleGoogleCallback() {
 
     window.history.replaceState({}, "", window.location.pathname);
     setMessage("Google sign-up successful.");
-    window.location.href = user.role === "seller" ? "./sell.html" : "./index.html";
+    window.location.href = user.role === "seller" ? "./sell.html" : "./buyer.html";
   } catch (err) {
     setMessage(`Google sign-up failed: ${err.message}`, true);
     if (googleButton) googleButton.disabled = false;

@@ -22,6 +22,8 @@
     <nav>
       <a href="./index.html">Home</a>
       <a href="./categories.html">Categories</a>
+      <a href="./browse.html">Browse</a>
+      <a href="./how-it-works.html">How It Works</a>
       <a href="./sell.html" class="active">Sell</a>
       <a href="./feedback.html">Feedback</a>
       <a data-auth-pill href="./signin.html">Sign In</a>
@@ -34,6 +36,8 @@
   <div class="nav-mobile" id="nav-mobile">
     <a href="./index.html">Home</a>
     <a href="./categories.html">Categories</a>
+    <a href="./browse.html">Browse</a>
+    <a href="./how-it-works.html">How It Works</a>
     <a href="./sell.html">Sell</a>
     <a href="./feedback.html">Feedback</a>
     <div class="nav-mobile-divider"></div>
@@ -43,58 +47,27 @@
 
   <main class="page-main">
     <section class="page-intro">
-      <h1>Seller Portal</h1>
-      <p id="seller-user" class="subtle"></p>
-      <p id="profile-state" class="subtle"></p>
-      <p id="sell-status" class="subtle"></p>
+      <p class="eyebrow">Seller hub</p>
+      <h1>Prepare inventory for DealzTT review.</h1>
+      <p>Vehicles, machinery, repossessions, and liquidation inventory are the first priority. The current public site does not yet accept, publish, schedule, or settle consignments online.</p>
     </section>
 
-    <section class="split-grid">
-      <article class="card">
-        <h2>Seller Profile</h2>
-        <form id="seller-profile-form" class="stack-form">
-          <input name="business_name" type="text" placeholder="Business name" required />
-          <input name="phone" type="text" placeholder="Phone" />
-          <input name="city" type="text" placeholder="Town or City" />
-          <input name="state" type="text" placeholder="Region (Trinidad/Tobago)" />
-          <textarea name="about" placeholder="About your DealzTT seller profile"></textarea>
-          <button class="btn" type="submit">Save Profile</button>
-        </form>
-      </article>
-
-      <article class="card">
-        <h2>Upload Item</h2>
-        <form id="item-upload-form" class="stack-form">
-          <select id="item-category" required></select>
-          <input name="title" type="text" placeholder="Item title (use [DEMO] for sample data)" required />
-          <textarea name="description" placeholder="Description" required></textarea>
-          <div class="inline-fields">
-            <input name="starting_bid" type="number" min="1" step="1" placeholder="Starting bid" required />
-            <input name="reserve_price" type="number" min="0" step="1" placeholder="Reserve price" />
-            <input name="quantity" type="number" min="1" step="1" value="1" required />
-          </div>
-          <input name="image_file" type="file" accept="image/*" />
-          <p class="subtle">Upload a photo to auto-compress to WebP for faster loading.</p>
-          <input name="image_url" type="url" placeholder="Image URL" />
-          <div class="inline-fields">
-            <input name="city" type="text" placeholder="Town or City" />
-            <input name="state" type="text" placeholder="Region (Trinidad/Tobago)" />
-          </div>
-          <label class="check-row"><input name="shipping_available" type="checkbox" /> Shipping Available</label>
-          <label class="check-row"><input name="pickup_available" type="checkbox" checked /> Pickup Available</label>
-          <button class="btn" type="submit">Submit Item</button>
-        </form>
-      </article>
+    <section class="guide-grid">
+      <article class="card"><h2>Prepare a consignment pack</h2><p class="subtle">Have the item title, location, ownership or transfer information, condition details, known defects, requested reserve guidance, and clear images ready for review.</p></article>
+      <article class="card"><h2>Vehicle and machinery records</h2><p class="subtle">Include make, model, year, mileage or hours, operating condition, keys, damage, documentation status, and any available inspection evidence. Do not publish private document numbers.</p></article>
+      <article class="card"><h2>What happens next</h2><p class="subtle">Consignment review, approval, fee terms, scheduling, buyer payment, pickup, and seller settlement are not connected to the public site yet.</p><span class="coming-next">Online consignment workflow coming with auction operations</span></article>
     </section>
 
     <section class="card">
-      <h2>Recent Submissions</h2>
-      <ul id="recent-submissions" class="plain-list"></ul>
+      <h2>Start a consignment conversation</h2>
+      <p class="subtle">Use the feedback portal to describe the inventory you would like reviewed. Do not send payment details, identity documents, or full vehicle identification numbers through the form.</p>
+      <a class="btn" href="./feedback.html">Open consignment enquiry</a>
     </section>
   </main>
 
+  <footer class="site-footer"><p><a href="./browse.html">Browse</a> <a href="./how-it-works.html">How It Works</a> <a href="./buyer.html">Buyer Hub</a></p></footer>
+
   <script src="./js/api.js"></script>
   <script src="./js/common.js"></script>
-  <script src="./js/sell.js"></script>
 </body>
 </html>

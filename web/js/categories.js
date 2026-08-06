@@ -4,30 +4,25 @@ const suggestions = document.getElementById("category-suggestions");
 const count = document.getElementById("category-count");
 let all = [];
 
-const DEMO_CATEGORIES = [
-  { slug: "electronics", name: "Electronics", sort_order: 1, icon: "⚡", lot_count: 3 },
-  { slug: "home-garden", name: "Home & Garden", sort_order: 2, icon: "🏡", lot_count: 2 },
-  { slug: "vehicles", name: "Vehicle Parts", sort_order: 3, icon: "🚗", lot_count: 1 },
-  { slug: "collectibles", name: "Collectibles", sort_order: 4, icon: "🗝️", lot_count: 1 },
-  { slug: "fashion", name: "Fashion & Accessories", sort_order: 5, icon: "💎", lot_count: 2 },
-  { slug: "sports", name: "Sports & Outdoors", sort_order: 6, icon: "⚽", lot_count: 1 },
-  { slug: "tools", name: "Tools & Equipment", sort_order: 7, icon: "🔧", lot_count: 1 },
-  { slug: "music", name: "Music & Instruments", sort_order: 8, icon: "🎵", lot_count: 1 },
-];
-
 function render(rows) {
   list.innerHTML = "";
+  if (!rows.length) {
+    list.innerHTML = '<article class="empty-state"><h2>No categories are available right now.</h2><p>DealzTT does not show preview categories when the live catalogue cannot be loaded.</p></article>';
+    return;
+  }
   rows.forEach((row) => {
     const card = document.createElement("article");
     card.className = "category-card";
-    const icon = row.icon || "";
-    const lotText = row.lot_count ? `${row.lot_count} active lot${row.lot_count > 1 ? "s" : ""}` : "";
-    card.innerHTML = `
-      <span class="category-icon">${icon}</span>
-      <h3>${row.name}</h3>
-      <p class="subtle">${lotText}</p>
-      <a class="btn ghost btn-sm" href="./index.html">Browse</a>
-    `;
+    const title = document.createElement("h3");
+    title.textContent = row.name;
+    const copy = document.createElement("p");
+    copy.className = "subtle";
+    copy.textContent = "Browse published lots in this category when they are available.";
+    const link = document.createElement("a");
+    link.className = "btn ghost btn-sm";
+    link.href = `./browse.html?category=${encodeURIComponent(row.slug)}`;
+    link.textContent = "Browse";
+    card.append(title, copy, link);
     list.appendChild(card);
   });
   count.textContent = `${rows.length} categories`;
@@ -43,19 +38,20 @@ function renderSuggestions(rows) {
 }
 
 input.addEventListener("input", () => {
-  const q = input.value.trim().toLowerCase();
-  const filtered = all.filter((row) => row.name.toLowerCase().includes(q) || row.slug.toLowerCase().includes(q));
+  const query = input.value.trim().toLowerCase();
+  const filtered = all.filter((row) => row.name.toLowerCase().includes(query) || row.slug.toLowerCase().includes(query));
   renderSuggestions(filtered);
   render(filtered);
 });
 
 (async () => {
-  if (window.AuctionUi) window.AuctionUi.updateAuthPills();
+  window.AuctionUi.updateAuthPills();
   try {
     all = await window.AuctionApi.apiFetch("/auction_categories?select=slug,name,sort_order&order=sort_order.asc");
+    renderSuggestions(all);
+    render(all);
   } catch {
-    all = DEMO_CATEGORIES;
+    count.textContent = "Categories could not be loaded right now.";
+    render([]);
   }
-  renderSuggestions(all);
-  render(all);
 })();

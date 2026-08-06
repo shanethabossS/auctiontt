@@ -1,70 +1,54 @@
-# AUCTIONSITE
+# DealzTT
 
-End-to-end starter for an auction platform with:
-- Postgres database schema
-- PostgREST API layer
-- pgAdmin UI
-- Connected web frontend
-- Flutter mobile starter
+DealzTT is Trinidad & Tobago's developing local auction marketplace, positioned first around vehicles, machinery, repossessions, liquidations, and selected general goods.
 
-## Top U.S. auction UX references (research)
-- HiBid
-- ShopGoodwill
-- EstateSales.net
+Production: [dealztt.com](https://dealztt.com/)
 
-See: `research/top-3-us-auction-sites.md`.
+## Current architecture
 
-## Stack Ports (AUCTIONSITE local stack)
-- Postgres: `127.0.0.1:55432`
-- PostgREST: `http://127.0.0.1:33001`
-- pgAdmin: `http://127.0.0.1:55050`
+- Static web frontend: `web/`, hosted by Vercel
+- Central API: `https://api.sovdigitalgroup.com` Express service
+- Database: DigitalOcean Managed Postgres
+- Production route rewrites and security headers: `web/vercel.json`
 
-## Start Stack
+The retired AUCTIONSITE Docker/PostgREST stack is not the production deployment model. Do not deploy Docker, PostgREST, or local database changes as part of DealzTT web work.
+
+## Web pages
+
+- `index.html` — launch state and published marketplace overview
+- `browse.html` — live-feed discovery by category, location, ending time, and vehicle-focused inventory
+- `categories.html` — live category catalogue
+- `lot.html` — published lot detail and reporting route
+- `buyer.html` — buyer account preparation hub
+- `sell.html` — consignment preparation hub
+- `how-it-works.html` — public buyer, fee, and trust guidance
+- `signin.html`, `signup.html`, `feedback.html` — account and feedback routes
+
+## Local preview
+
+From the repository root:
+
 ```powershell
-cd C:\AI_WORKSPACE\AUCTIONSITE\infra
-docker compose up -d
+python -m http.server 4173 --directory web
 ```
 
-## Database
-Schema + seed SQL:
-- `db/001_auctionsite_schema.sql`
+Then open `http://127.0.0.1:4173/`. The local preview is for static layout and link testing. Live marketplace data comes from the central API in production.
 
-Apply manually (if needed):
+## Validation
+
 ```powershell
-powershell -ExecutionPolicy Bypass -File C:\AI_WORKSPACE\AUCTIONSITE\scripts\apply_db.ps1
+node --check web\js\home.js
+node --check web\js\browse.js
+node --check web\js\lot.js
+git diff --check
 ```
 
-## API quick checks
-```powershell
-powershell -ExecutionPolicy Bypass -File C:\AI_WORKSPACE\AUCTIONSITE\scripts\test_api.ps1
-```
+Run a local link crawl before release so every internal navigation, footer, and CTA route resolves to an existing useful page.
 
-## Web frontend
-Open:
-- `web/index.html`
+## Release status
 
-The frontend auto-detects PostgREST at `33001` then fallback `3001`.
+The frontend only renders the real live feed and never substitutes preview inventory. Buyer activity, seller operations, auction schedules, bid rules, auction closing, orders, fees, payments, pickup, settlement, and disputes still require central API and database work.
 
-## Security + Payments Gateway (VPS service)
-The `upload_service` now handles:
-- image optimization uploads
-- auth login/register/refresh/logout
-- server-time endpoint for accurate countdowns
-- Fygaro checkout-link creation
+The central API deploy is currently held because its working tree contains unrelated, intentionally undeployed TTPay changes. Keep future DealzTT backend work isolated and separately reviewed until Shane explicitly approves a release.
 
-Required service env vars:
-- `AUCTIONSITE_DB_DSN` (example: `postgresql://auction_admin:auction_admin_pass@127.0.0.1:55432/auctionsite`)
-- `AUCTIONSITE_JWT_SECRET` (must match PostgREST `PGRST_JWT_SECRET`)
-- `FYGARO_BUTTON_URL` (your Fygaro button URL)
-
-Optional Fygaro JWT mode (locked amount):
-- `FYGARO_API_PUBLIC_KEY`
-- `FYGARO_API_SECRET_KEY`
-- `FYGARO_JWT_KID`
-
-## Flutter mobile
-```powershell
-cd C:\AI_WORKSPACE\AUCTIONSITE\mobile_flutter
-flutter pub get
-flutter run
-```
+See [DEALZTT_FINISH_PLAN.md](./DEALZTT_FINISH_PLAN.md) for the product roadmap and remaining backend milestones.

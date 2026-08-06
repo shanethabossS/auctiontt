@@ -21,6 +21,8 @@
     <nav>
       <a href="./index.html">Home</a>
       <a href="./categories.html">Categories</a>
+      <a href="./browse.html">Browse</a>
+      <a href="./how-it-works.html">How It Works</a>
       <a href="./sell.html">Sell</a>
       <a href="./feedback.html">Feedback</a>
       <a data-auth-pill href="./signin.html" class="active">Sign In</a>
@@ -33,6 +35,8 @@
   <div class="nav-mobile" id="nav-mobile">
     <a href="./index.html">Home</a>
     <a href="./categories.html">Categories</a>
+    <a href="./browse.html">Browse</a>
+    <a href="./how-it-works.html">How It Works</a>
     <a href="./sell.html">Sell</a>
     <a href="./feedback.html">Feedback</a>
     <div class="nav-mobile-divider"></div>
@@ -51,14 +55,16 @@
       </div>
       <p class="auth-divider">or use email and password</p>
       <form id="signin-form" class="stack-form">
-        <input name="email" type="email" placeholder="Email" required />
-        <input name="password" type="password" placeholder="Password" required />
+        <input name="email" type="email" placeholder="Email" aria-label="Email" required />
+        <input name="password" type="password" placeholder="Password" aria-label="Password" required />
         <button class="btn" type="submit">Sign In</button>
       </form>
       <p class="subtle auth-switch">Need an account? <a href="./signup.html">Sign up</a></p>
     </section>
     <p id="auth-message" class="subtle" style="grid-column: 1 / -1;"></p>
   </main>
+
+  <footer class="site-footer"><p><a href="./browse.html">Browse</a> <a href="./how-it-works.html">How It Works</a> <a href="./buyer.html">Buyer Hub</a></p></footer>
 
   <script src="./js/api.js"></script>
   <script src="./js/common.js"></script>

@@ -37,6 +37,8 @@
     <nav>
       <a href="./index.html">Home</a>
       <a href="./categories.html">Categories</a>
+      <a href="./browse.html">Browse</a>
+      <a href="./how-it-works.html">How It Works</a>
       <a href="./sell.html">Sell</a>
       <a href="./feedback.html">Feedback</a>
       <a data-auth-pill href="./signin.html">Sign In</a>
@@ -49,6 +51,8 @@
   <div class="nav-mobile" id="nav-mobile">
     <a href="./index.html">Home</a>
     <a href="./categories.html">Categories</a>
+    <a href="./browse.html">Browse</a>
+    <a href="./how-it-works.html">How It Works</a>
     <a href="./sell.html">Sell</a>
     <a href="./feedback.html">Feedback</a>
     <div class="nav-mobile-divider"></div>
@@ -63,6 +67,12 @@
         <p class="subtle lot-shell-note">Mobile-friendly lot detail view with quick actions and trust signals.</p>
       </div>
       <p class="subtle" id="lot-loading">Loading lot details...</p>
+      <section id="lot-error" class="empty-state" hidden aria-labelledby="lot-error-title">
+        <p class="eyebrow">Lot unavailable</p>
+        <h2 id="lot-error-title">This lot is not available to view.</h2>
+        <p id="lot-error-message">Browse the published DealzTT catalogue to find available lots.</p>
+        <div class="launch-state-actions"><a class="btn" href="./browse.html">Browse auctions</a></div>
+      </section>
       <div id="lot-detail" class="lot-detail-layout" style="display:none;">
         <section class="lot-stage">
           <div class="lot-stage-media">
@@ -72,7 +82,7 @@
             <div class="lot-stage-header">
               <p class="chip" id="lot-category"></p>
               <div class="lot-stage-badges">
-                <span class="chip chip-green" id="lot-status-badge">Live bidding</span>
+              <span class="chip chip-green" id="lot-status-badge">Published lot</span>
               </div>
             </div>
             <h1 id="lot-title" class="lot-stage-title"></h1>
@@ -89,9 +99,9 @@
 
         <section class="lot-detail-grid">
           <article class="card lot-panel">
-            <h2>Auction actions</h2>
+            <h2>Lot availability</h2>
             <div class="lot-actions lot-detail-actions">
-              <a href="./index.html" class="btn" data-testid="listing-primary-action">Go to Live Bidding</a>
+              <span class="coming-next" data-testid="listing-primary-action">Bidding will be enabled only when the complete auction rules and payment flow are published.</span>
               <button id="share-lot" type="button" class="btn ghost" data-testid="listing-share-button">Share Lot</button>
               <a id="report-lot" href="#" target="_blank" rel="noopener noreferrer" class="btn ghost" data-testid="listing-report-button">Report Lot</a>
             </div>
@@ -105,8 +115,8 @@
                 <strong id="lot-region">Trinidad & Tobago</strong>
               </div>
               <div class="detail-bullet">
-                <span class="detail-label">Current energy</span>
-                <strong id="lot-urgency">Active bidding</strong>
+                <span class="detail-label">Bid activity</span>
+                <strong id="lot-urgency">Published bid count</strong>
               </div>
               <div class="detail-bullet">
                 <span class="detail-label">Seller status</span>
@@ -139,6 +149,8 @@
       </div>
     </section>
   </main>
+
+  <footer class="site-footer"><p><a href="./browse.html">Browse</a> <a href="./how-it-works.html">How It Works</a> <a href="./buyer.html">Buyer Hub</a></p></footer>
 
   <script src="./js/api.js"></script>
   <script src="./js/common.js"></script>

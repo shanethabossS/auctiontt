@@ -37,6 +37,8 @@
     <nav>
       <a href="./index.html">Home</a>
       <a href="./categories.html" class="active">Categories</a>
+      <a href="./browse.html">Browse</a>
+      <a href="./how-it-works.html">How It Works</a>
       <a href="./sell.html">Sell</a>
       <a href="./feedback.html">Feedback</a>
       <a data-auth-pill href="./signin.html">Sign In</a>
@@ -49,6 +51,8 @@
   <div class="nav-mobile" id="nav-mobile">
     <a href="./index.html">Home</a>
     <a href="./categories.html">Categories</a>
+    <a href="./browse.html">Browse</a>
+    <a href="./how-it-works.html">How It Works</a>
     <a href="./sell.html">Sell</a>
     <a href="./feedback.html">Feedback</a>
     <div class="nav-mobile-divider"></div>
@@ -59,17 +63,18 @@
   <main class="page-main">
     <section class="page-intro">
       <h1>All Categories</h1>
-      <p>Type to filter DealzTT category names and discover auction opportunities across Trinidad &amp; Tobago.</p>
+      <p>Browse the categories DealzTT is preparing for upcoming auction inventory across Trinidad &amp; Tobago.</p>
+      <label class="sr-only" for="category-filter-input">Search category names</label>
       <input id="category-filter-input" type="text" placeholder="Search category names..." list="category-suggestions" autocomplete="off" />
       <datalist id="category-suggestions"></datalist>
       <p id="category-count" class="subtle"></p>
     </section>
 
-    <section id="category-grid" class="category-grid"></section>
+    <section id="category-grid" class="category-grid" aria-live="polite"></section>
   </main>
 
   <footer class="site-footer">
-    <p>DealzTT &mdash; Trinidad & Tobago's local auction marketplace. Powered by <a href="https://sovdigitalgroup.com" target="_blank" rel="noreferrer">SOV Digital Group</a>.</p>
+    <p>DealzTT &mdash; Trinidad & Tobago's local auction marketplace. <a href="./browse.html">Browse</a> <a href="./how-it-works.html">How It Works</a> Powered by <a href="https://sovdigitalgroup.com" target="_blank" rel="noreferrer">SOV Digital Group</a>.</p>
   </footer>
 
   <script src="./js/api.js"></script>
