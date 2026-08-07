@@ -2,6 +2,27 @@ let serverOffsetMs = 0;
 
 const SSO_URL = "https://id.sovdigitalgroup.com/";
 const DEMO_USER_KEY = "dealztt_demo_user";
+const RETURN_KEY = "dealztt_return";
+
+/* Sign-in link that carries the current page as the post-login return target.
+   The `next` param is the ecosystem convention; we also stash the URL locally
+   so we can bounce back even if the hub only returns to the site root. */
+function signInHref() {
+  return `${SSO_URL}?next=${encodeURIComponent(location.href)}`;
+}
+function rememberReturn() {
+  try { localStorage.setItem(RETURN_KEY, JSON.stringify({ url: location.href, at: Date.now() })); } catch {}
+}
+/* After returning from SSO signed-in, jump back to the page the user left. */
+function maybeReturnAfterLogin() {
+  if (!hasAuthCookie()) return;                 // only for real SSO sign-ins
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(RETURN_KEY) || "null"); } catch {}
+  if (!saved || !saved.url) return;
+  const fresh = Date.now() - Number(saved.at || 0) < 10 * 60 * 1000;
+  localStorage.removeItem(RETURN_KEY);
+  if (fresh && saved.url !== location.href) location.replace(saved.url);
+}
 
 function money(value) {
   return new Intl.NumberFormat("en-TT", {
@@ -82,8 +103,8 @@ function updateAuthPills() {
       }
     } else {
       pill.textContent = "Sign In";
-      pill.href = SSO_URL;
-      pill.onclick = null;
+      pill.href = signInHref();
+      pill.onclick = () => { rememberReturn(); return true; };
     }
   });
 }
@@ -98,7 +119,7 @@ function toastStack() {
   }
   return stack;
 }
-const TOAST_ICONS = { ok: "✅", info: "🔔", warn: "⚡", err: "⚠️" };
+const TOAST_ICONS = { ok: "✅", info: "🔔", warn: "⚡", err: "⚠️", badge: "🏅" };
 function toast(kind, title, msg, ttl = 4200) {
   const el = document.createElement("div");
   el.className = `toast ${kind}`;
@@ -135,18 +156,20 @@ function openSignInGate(actionLabel) {
       <h3>Sign in to ${actionLabel}</h3>
       <p>You need a DealzTT account to ${actionLabel}. Bidding, watchlists, and payments are only available to signed-in members.</p>
       <div class="gate-actions">
-        <a class="btn" href="${SSO_URL}">Sign in with SOV ID</a>
+        <a class="btn" id="gate-sso" href="${signInHref()}">Sign in with SOV ID</a>
         ${demoAvailable ? '<button class="btn ghost" id="gate-demo" type="button">Continue as demo bidder</button>' : ""}
         <button class="btn ghost" id="gate-cancel" type="button">Not now</button>
       </div>
     </div>`;
   overlay.addEventListener("click", (e) => { if (e.target === overlay) closeSignInGate(); });
   document.body.appendChild(overlay);
+  document.getElementById("gate-sso")?.addEventListener("click", rememberReturn);
   document.getElementById("gate-cancel")?.addEventListener("click", closeSignInGate);
   document.getElementById("gate-demo")?.addEventListener("click", () => {
     startDemoSession("demo_bidder");
     closeSignInGate();
     updateAuthPills();
+    window.DealzBadges?.record("signin");
     toast("ok", "Demo session started", "You can now place demo bids. This is preview only.");
     document.dispatchEvent(new CustomEvent("dealztt:signedin"));
   });
@@ -174,8 +197,10 @@ function initMobileNav() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  maybeReturnAfterLogin();
   initMobileNav();
   updateAuthPills();
+  if (isSignedIn()) window.DealzBadges?.record("signin");
 });
 
 window.AuctionUi = {

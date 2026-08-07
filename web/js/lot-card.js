@@ -25,12 +25,17 @@ function buildLotCard(lot, opts = {}) {
     card.appendChild(ribbon);
   }
 
+  const mediaLink = document.createElement("a");
+  mediaLink.className = "lot-media";
+  mediaLink.href = `./lot.html?id=${encodeURIComponent(lot.id)}`;
+  mediaLink.setAttribute("aria-label", `View ${lot.title}`);
   const image = document.createElement("img");
   image.className = "lot-image";
   image.loading = "lazy";
   image.src = lot.image_url || FALLBACK_IMG;
   image.alt = `${lot.title} lot image`;
   image.onerror = () => { image.onerror = null; image.src = FALLBACK_IMG; };
+  mediaLink.appendChild(image);
 
   const content = document.createElement("div");
   content.className = "lot-content";
@@ -91,7 +96,7 @@ function buildLotCard(lot, opts = {}) {
     content.appendChild(block);
   }
 
-  card.append(image, content);
+  card.append(mediaLink, content);
   return card;
 }
 
@@ -132,6 +137,9 @@ document.addEventListener("submit", async (event) => {
     }
     amountInput.value = "";
     window.AuctionUi.toast("ok", "Bid placed!", `You lead ${lot.title} at ${window.AuctionUi.money(lot.current_bid)}.`);
+    const endsNode = card.querySelector("[data-ends]");
+    const clutch = endsNode ? (new Date(endsNode.dataset.ends).getTime() - window.AuctionUi.nowMs() < 120000) : false;
+    window.DealzBadges?.record("bid", { amount: lot.current_bid, clutch });
     announceBid(lot, lot.current_bid);
   } catch (err) {
     window.AuctionUi.toast("err", "Bid not placed", err.message || "Please try again.");

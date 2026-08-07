@@ -33,38 +33,180 @@ const relatedCopy = document.getElementById("related-lots-copy");
 const LOT_FALLBACK = window.AuctionCard.FALLBACK_IMG;
 let outbidTimer = null;
 
-/* ── Bid panel ────────────────────────────────────────────────────────────── */
+/* ── eBay-style bidding state ────────────────────────────────────────────── */
+let viewerMax = 0;          // proxy: bid for me up to this
+let viewerWinning = false;  // am I currently the high bidder?
+let watchers = 0;
+const bidHistory = [];      // {name, you, amount, at}
+const RIVALS = ["k***r", "s***a", "d***l", "r***a", "m***n", "a***h", "trini_***", "island_***"];
+const fmtMoney = (v) => window.AuctionUi.money(v);
+const incr = (v) => window.AuctionApi.minIncrement(v);
+
+function seedHistory(lot) {
+  bidHistory.length = 0;
+  let amt = Number(lot.current_bid || lot.starting_bid || 0);
+  const n = Math.min(Number(lot.bid_count || 0), 8);
+  for (let i = 0; i < n; i++) {
+    bidHistory.push({ name: RIVALS[i % RIVALS.length], you: false, amount: amt, at: window.AuctionUi.nowMs() - (i * 137 + 40) * 1000 });
+    amt = Math.max(Number(lot.starting_bid || 0), amt - incr(amt));
+  }
+}
+function pushHistory(entry) { bidHistory.unshift(entry); }
+
+function statusBanner() {
+  if (!bidHistory.length || !window.AuctionUi.isSignedIn()) {
+    return `<div class="bid-status neutral"><span class="dot"></span> No bids from you yet — place one to take the lead.</div>`;
+  }
+  if (viewerWinning) {
+    const proxy = viewerMax ? ` <span class="proxy-active">🤖 Auto-bidding up to ${fmtMoney(viewerMax)}</span>` : "";
+    return `<div class="bid-status winning"><span class="dot"></span> You're the highest bidder!${proxy}</div>`;
+  }
+  return `<div class="bid-status outbid"><span class="dot"></span> You've been outbid — bid again to retake the lead.</div>`;
+}
+
 function renderBidPanel(lot) {
-  const ended = window.AuctionUi.timeLeft(lot.ends_at) === "Ended";
-  if (ended) {
+  if (window.AuctionUi.timeLeft(lot.ends_at) === "Ended") {
     bidPanel.innerHTML = `<div class="bid-locked">This auction has ended. <a class="btn btn-sm" href="./browse.html">Browse live lots</a></div>`;
     return;
   }
   const floor = Number(lot.current_bid || lot.starting_bid || 0);
-  const minNext = floor + window.AuctionApi.minIncrement(floor);
+  const step = incr(floor);
+  const minNext = floor + step;
+  const signedIn = window.AuctionUi.isSignedIn();
+
   bidPanel.innerHTML = `
-    <p class="subtle" style="margin-bottom:8px;">Current bid <strong style="color:var(--green-neon);">${window.AuctionUi.money(floor)}</strong> · ${Number(lot.bid_count || 0)} bids</p>
-    <form class="bid-inline js-bid-form">
-      <input type="number" class="js-bid-amount" min="${minNext}" step="1" placeholder="${minNext.toLocaleString("en-TT")}+" aria-label="Your bid (TTD)" />
+    ${statusBanner()}
+    <div class="bid-meta">
+      <span>Current bid <b>${fmtMoney(floor)}</b></span>
+      <span><b>${Number(lot.bid_count || 0)}</b> bids</span>
+      <span>👁 <b>${watchers}</b> watching</span>
+    </div>
+    <div class="quick-bids">
+      <button type="button" data-bid="${minNext}">${fmtMoney(minNext)}<small>min bid</small></button>
+      <button type="button" data-bid="${floor + step * 2}">${fmtMoney(floor + step * 2)}<small>+${fmtMoney(step)}</small></button>
+      <button type="button" data-bid="${floor + step * 5}">${fmtMoney(floor + step * 5)}<small>strong bid</small></button>
+    </div>
+    <form class="bid-inline" id="lot-bid-form">
+      <input type="number" id="lot-bid-amount" min="${minNext}" step="1" placeholder="${minNext.toLocaleString("en-TT")}+ (TTD)" aria-label="Your bid" />
       <button class="btn" type="submit">Place bid</button>
     </form>
-    <p class="bid-hint">Minimum next bid ${window.AuctionUi.money(minNext)}${window.AuctionUi.isSignedIn() ? "" : " · sign in required"}</p>`;
+    <label class="maxbid-toggle"><input type="checkbox" id="maxbid-check" ${viewerMax ? "checked" : ""}/> Set a max bid — we'll bid for you automatically</label>
+    <div class="maxbid-wrap ${viewerMax ? "open" : ""}" id="maxbid-wrap">
+      <div class="bid-inline">
+        <input type="number" id="maxbid-amount" min="${minNext}" step="1" value="${viewerMax || ""}" placeholder="Your max, e.g. ${(floor + step * 8).toLocaleString("en-TT")}" aria-label="Maximum bid" />
+        <button class="btn ghost" type="button" id="maxbid-set">Set max</button>
+      </div>
+      <p class="maxbid-note">Proxy bidding: DealzTT bids the minimum needed to keep you in front, up to your max. You only pay one increment above the next-highest bidder.</p>
+    </div>
+    <p class="bid-hint">Minimum next bid ${fmtMoney(minNext)}${signedIn ? "" : " · sign in required"}</p>
+    <div class="bid-history">
+      <h3>Bid history <span class="subtle">${bidHistory.length} shown</span></h3>
+      <div class="bid-history-list" id="bid-history-list"></div>
+    </div>`;
+
+  renderHistory();
+  wireBidPanel(lot, minNext);
 }
 
-/* ── Outbid notification (demo): a rival tops you shortly after you bid ────── */
-function scheduleOutbid(lot) {
-  if (!window.AuctionApi.AuctionData.isDemo()) return;
-  clearTimeout(outbidTimer);
-  outbidTimer = setTimeout(() => {
-    if (window.AuctionUi.timeLeft(lot.ends_at) === "Ended") return;
-    const bump = window.AuctionApi.minIncrement(Number(lot.current_bid));
-    lot.current_bid = Number(lot.current_bid) + bump;
-    lot.bid_count = Number(lot.bid_count || 0) + 1;
-    priceNode.textContent = window.AuctionUi.money(lot.current_bid);
+function renderHistory() {
+  const list = document.getElementById("bid-history-list");
+  if (!list) return;
+  if (!bidHistory.length) { list.innerHTML = `<p class="subtle" style="padding:8px 4px;">No bids yet. Be the first!</p>`; return; }
+  list.innerHTML = bidHistory.map((b, i) => `
+    <div class="bh-row ${i === 0 ? "leading" : ""}">
+      <span class="bh-bidder">${b.you ? '<span class="you">You</span>' : b.name}${i === 0 ? " · leading" : ""}</span>
+      <span class="bh-amount">${fmtMoney(b.amount)}</span>
+      <span class="bh-time">${window.AuctionUi.timeAgo(b.at)}</span>
+    </div>`).join("");
+}
+
+function wireBidPanel(lot, minNext) {
+  bidPanel.querySelectorAll(".quick-bids button[data-bid]").forEach((b) => {
+    b.addEventListener("click", () => placeViewerBid(lot, Number(b.dataset.bid)));
+  });
+  const form = document.getElementById("lot-bid-form");
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    placeViewerBid(lot, Number(document.getElementById("lot-bid-amount").value));
+  });
+  const check = document.getElementById("maxbid-check");
+  const wrap = document.getElementById("maxbid-wrap");
+  check?.addEventListener("change", () => {
+    wrap.classList.toggle("open", check.checked);
+    if (!check.checked) viewerMax = 0;
+  });
+  document.getElementById("maxbid-set")?.addEventListener("click", () => {
+    if (!window.AuctionUi.requireSignIn("set a max bid")) return;
+    const max = Number(document.getElementById("maxbid-amount").value);
+    if (!Number.isFinite(max) || max < minNext) {
+      window.AuctionUi.toast("err", "Max too low", `Your max must be at least ${fmtMoney(minNext)}.`);
+      return;
+    }
+    viewerMax = max;
+    window.DealzBadges?.record("maxbid");
+    window.AuctionUi.toast("info", "Max bid set", `We'll auto-bid up to ${fmtMoney(max)} to keep you in front.`);
+    // if we're not currently winning, immediately bid up to secure the lead
+    if (!viewerWinning) placeViewerBid(lot, Math.min(max, Number(lot.current_bid) + incr(Number(lot.current_bid))), { fromProxy: true });
+    else renderBidPanel(lot);
+  });
+}
+
+/* Core: place the viewer's bid, update everything, arm a rival response. */
+async function placeViewerBid(lot, amount, opts = {}) {
+  if (!window.AuctionUi.requireSignIn("place a bid")) return;
+  try {
+    const result = await window.AuctionApi.AuctionData.placeBid(lot.id, amount);
+    Object.assign(lot, result.lot);
+    viewerWinning = true;
+    const clutch = new Date(lot.ends_at).getTime() - window.AuctionUi.nowMs() < 120000;
+    pushHistory({ name: "You", you: true, amount: lot.current_bid, at: window.AuctionUi.nowMs() });
+    priceNode.textContent = fmtMoney(lot.current_bid);
     priceNode.classList.remove("price-pop"); void priceNode.offsetWidth; priceNode.classList.add("price-pop");
     bidsNode.textContent = `${lot.bid_count} bids`;
     renderBidPanel(lot);
-    window.AuctionUi.toast("warn", "You've been outbid!", `Someone bid ${window.AuctionUi.money(lot.current_bid)} on ${lot.title}. Bid again to retake the lead.`);
+    if (!opts.fromProxy) window.AuctionUi.toast("ok", "Bid placed!", `You lead ${lot.title} at ${fmtMoney(lot.current_bid)}.`);
+    window.DealzBadges?.record("bid", { amount: lot.current_bid, clutch });
+    document.dispatchEvent(new CustomEvent("dealztt:bid", { detail: { lot: lot.title, amount: lot.current_bid, who: window.AuctionUi.currentUserName() } }));
+    scheduleRival(lot);
+  } catch (err) {
+    window.AuctionUi.toast("err", "Bid not placed", err.message || "Please try again.");
+  }
+}
+
+/* Demo: a rival responds. If the viewer has proxy headroom, auto-rebid and
+   stay winning; otherwise the viewer is outbid and notified. */
+function scheduleRival(lot) {
+  if (!window.AuctionApi.AuctionData.isDemo()) return;
+  clearTimeout(outbidTimer);
+  outbidTimer = setTimeout(async () => {
+    if (window.AuctionUi.timeLeft(lot.ends_at) === "Ended") return;
+    const rivalBid = Number(lot.current_bid) + incr(Number(lot.current_bid));
+
+    // Proxy: if the rival is within our max, DealzTT bids for us and we stay ahead.
+    if (viewerMax && rivalBid + incr(rivalBid) <= viewerMax) {
+      lot.current_bid = rivalBid + incr(rivalBid);
+      lot.bid_count = Number(lot.bid_count || 0) + 2;
+      pushHistory({ name: RIVALS[0], you: false, amount: rivalBid, at: window.AuctionUi.nowMs() - 1000 });
+      pushHistory({ name: "You", you: true, amount: lot.current_bid, at: window.AuctionUi.nowMs() });
+      viewerWinning = true;
+      priceNode.textContent = fmtMoney(lot.current_bid);
+      bidsNode.textContent = `${lot.bid_count} bids`;
+      renderBidPanel(lot);
+      window.AuctionUi.toast("info", "Auto-bid kept you ahead", `A rival bid ${fmtMoney(rivalBid)} — DealzTT bid ${fmtMoney(lot.current_bid)} for you.`);
+      scheduleRival(lot);
+      return;
+    }
+
+    // Outbid.
+    lot.current_bid = rivalBid;
+    lot.bid_count = Number(lot.bid_count || 0) + 1;
+    pushHistory({ name: RIVALS[Math.floor(bidHistory.length) % RIVALS.length], you: false, amount: rivalBid, at: window.AuctionUi.nowMs() });
+    viewerWinning = false;
+    priceNode.textContent = fmtMoney(lot.current_bid);
+    priceNode.classList.remove("price-pop"); void priceNode.offsetWidth; priceNode.classList.add("price-pop");
+    bidsNode.textContent = `${lot.bid_count} bids`;
+    renderBidPanel(lot);
+    window.AuctionUi.toast("warn", "You've been outbid!", `Someone bid ${fmtMoney(lot.current_bid)} on ${lot.title}. Bid again to retake the lead.`);
   }, 6500);
 }
 
@@ -207,23 +349,27 @@ function renderLot(lot) {
   urgencyNode.textContent = `${bidCount} recorded bid${bidCount === 1 ? "" : "s"}`;
   sellerStatusNode.textContent = lot.seller_verified ? "Verified seller" : "Marketplace seller";
 
+  watchers = Math.max(3, Math.round(bidCount * 1.4) + 5);
+  seedHistory(lot);
   renderBidPanel(lot);
 
+  let watching = false;
   watchButton.onclick = () => {
     if (!window.AuctionUi.requireSignIn("use your watchlist")) return;
-    window.AuctionUi.toast("ok", "Added to watchlist", `We'll notify you about ${lot.title}.`);
+    watching = !watching;
+    watchButton.textContent = watching ? "✓ Watching" : "Add to watchlist";
+    if (watching) {
+      watchers += 1;
+      window.DealzBadges?.record("watch");
+      window.AuctionUi.toast("ok", "Added to watchlist", `We'll notify you before ${lot.title} ends.`);
+    } else {
+      watchers = Math.max(0, watchers - 1);
+    }
+    renderBidPanel(lot);
   };
   shareButton.onclick = () => shareLot(lot);
   reportLink.href = "#";
   reportLink.onclick = (e) => { e.preventDefault(); openReportModal(lot); };
-
-  // when the user places a bid on this lot, arm the outbid notification
-  document.addEventListener("dealztt:bid", (e) => {
-    if (e.detail.who === window.AuctionUi.currentUserName() && e.detail.lot === lot.title) {
-      renderBidPanel(lot);
-      scheduleOutbid(lot);
-    }
-  });
 
   document.title = `${lot.title} | DealzTT Auctions`;
   upsertCanonical(url);

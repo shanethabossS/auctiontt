@@ -50,9 +50,10 @@ function renderMajor() {
     const a = document.createElement("article");
     a.className = "major-card";
     a.dataset.lotId = lot.id;
+    const lotHref = `./lot.html?id=${encodeURIComponent(lot.id)}`;
     a.innerHTML = `
       ${lot.is_demo ? '<span class="demo-ribbon">Demo</span>' : ""}
-      <img class="mc-img" loading="lazy" src="${lot.image_url || window.AuctionCard.FALLBACK_IMG}" alt="${escapeAttr(lot.title)}" />
+      <a class="lot-media" href="${lotHref}" aria-label="View ${escapeAttr(lot.title)}"><img class="mc-img" loading="lazy" src="${lot.image_url || window.AuctionCard.FALLBACK_IMG}" alt="${escapeAttr(lot.title)}" /></a>
       <div class="mc-body">
         <p class="chip chip-pink">${escapeHtml(lot.category_name || "Major lot")}</p>
         <h3 class="mc-title"><a href="./lot.html?id=${encodeURIComponent(lot.id)}"></a></h3>
@@ -146,6 +147,16 @@ document.addEventListener("dealztt:bid", (e) => {
   pushFeed({ type: "bid", who: e.detail.who, lot: e.detail.lot, amount: e.detail.amount, at: window.AuctionUi.nowMs() });
 });
 
+/* ── Badges panel (sidebar) ─────────────────────────────────────────────── */
+const badgeMount = document.getElementById("badge-mount");
+function renderBadges() {
+  if (!badgeMount || !window.DealzBadges) return;
+  if (window.AuctionUi.isSignedIn()) { badgeMount.hidden = false; window.DealzBadges.render(badgeMount); }
+  else { badgeMount.hidden = true; badgeMount.innerHTML = ""; }
+}
+document.addEventListener("dealztt:badges", renderBadges);
+document.addEventListener("dealztt:signedin", renderBadges);
+
 /* Simulated marketplace chatter (DEMO only) — makes the feed feel alive. */
 const DEMO_ACTORS = ["kavir_868", "sasha.m", "denzil_tt", "rina_pos", "trini_deals", "marlon.j", "aaliyah_tt", "shivan_868"];
 function simulateActivity() {
@@ -228,6 +239,7 @@ function cssEscape(s) { return String(s).replace(/["\\]/g, "\\$&"); }
 (async () => {
   try {
     window.AuctionUi.updateAuthPills();
+    renderBadges();
     await loadData();
   } catch {
     showLaunch(true);
