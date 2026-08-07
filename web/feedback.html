@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Send Feedback — DealzTT Trinidad & Tobago Auctions</title>
-  <meta name="description" content="Send feedback to the DealzTT team about bugs, ideas, listing concerns, verification, payment, and other marketplace questions." />
+  <title>Contact & Feedback — DealzTT Trinidad & Tobago Auctions</title>
+  <meta name="description" content="Contact the DealzTT team or send feedback about bugs, ideas, listings, verification, and payments. Messages reach DealzTT support directly." />
   <meta name="robots" content="index,follow" />
   <link rel="canonical" href="https://dealztt.com/feedback.html" />
-  <meta property="og:title" content="Feedback — DealzTT" />
-  <meta property="og:description" content="Share platform feedback and help improve DealzTT before full public rollout." />
+  <meta property="og:title" content="Contact & Feedback — DealzTT" />
+  <meta property="og:description" content="Reach DealzTT support and help improve the marketplace." />
   <meta property="og:type" content="website" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,37 +20,74 @@
     <a class="brand" href="./index.html">DealzTT</a>
     <nav>
       <a href="./index.html">Home</a>
-      <a href="./categories.html">Categories</a>
       <a href="./browse.html">Browse</a>
       <a href="./how-it-works.html">How It Works</a>
       <a href="./sell.html">Sell</a>
-      <a href="./feedback.html" class="active">Feedback</a>
+      <a href="./feedback.html" class="active">Contact</a>
       <a data-auth-pill href="https://id.sovdigitalgroup.com/">Sign In</a>
-
     </nav>
-    <button class="nav-hamburger" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </header>
   <div class="nav-mobile" id="nav-mobile">
     <a href="./index.html">Home</a>
-    <a href="./categories.html">Categories</a>
     <a href="./browse.html">Browse</a>
     <a href="./how-it-works.html">How It Works</a>
     <a href="./sell.html">Sell</a>
-    <a href="./feedback.html">Feedback</a>
+    <a href="./feedback.html">Contact</a>
     <div class="nav-mobile-divider"></div>
     <a data-auth-pill-mobile href="https://id.sovdigitalgroup.com/">Sign In</a>
-
   </div>
 
   <main class="page-main">
-    <section class="page-intro"><p class="eyebrow">DealzTT feedback</p><h1>Send a private message to support.</h1><p>Your message is sent privately to DealzTT support. Do not include passwords, payment details, one-time codes, or unredacted identity and ownership documents.</p></section>
-    <section class="card"><form id="feedback-form" class="stack-form"><label>Your name<input name="name" maxlength="120" autocomplete="name" required></label><label>Your email<input name="email" type="email" maxlength="160" autocomplete="email" required></label><label>Feedback type<select name="type" required><option>Bug</option><option>Suggestion</option><option>Bad listing or report</option><option>Verification issue</option><option>Payment issue</option><option>Other</option></select></label><label>Subject<input name="subject" minlength="5" maxlength="160" required></label><label>Details<textarea name="details" rows="6" minlength="20" maxlength="3600" required></textarea></label><label>Related lot reference (optional)<input name="lot_reference" maxlength="120"></label><button class="btn" type="submit">Send private feedback</button><p id="feedback-status" class="subtle" role="status" aria-live="polite"></p></form></section>
+    <section class="page-intro">
+      <p class="eyebrow text-pink">Contact &amp; feedback</p>
+      <h1>Talk to the DealzTT team.</h1>
+      <p>Questions, a bad listing to flag, a consignment to discuss, or an idea to make DealzTT better — send it here. Your message goes privately to DealzTT support. Do not include passwords, payment details, one-time codes, or unredacted identity documents.</p>
+    </section>
+
+    <section class="info-grid">
+      <article class="info-tile">
+        <div class="info-emoji">📧</div>
+        <h3>Support inbox</h3>
+        <p><a href="mailto:info@sovdigitalgroup.com">info@sovdigitalgroup.com</a><br>General help, listings, and account questions.</p>
+      </article>
+      <article class="info-tile">
+        <div class="info-emoji">👤</div>
+        <h3>Founder direct</h3>
+        <p><a href="mailto:databosstt@gmail.com">databosstt@gmail.com</a><br>Partnerships and consignment enquiries.</p>
+      </article>
+      <article class="info-tile">
+        <div class="info-emoji">📍</div>
+        <h3>Where we operate</h3>
+        <p>Trinidad &amp; Tobago, island-wide.<br>Response within one to two business days.</p>
+      </article>
+    </section>
+
+    <section class="card" style="margin-top:22px;">
+      <h2>Send a message</h2>
+      <form id="feedback-form" class="stack-form">
+        <label>Your name<input name="name" maxlength="120" autocomplete="name" required></label>
+        <label>Your email<input name="email" type="email" maxlength="160" autocomplete="email" required></label>
+        <label>What is this about?<select name="type" required>
+          <option>General question</option>
+          <option>Bug</option>
+          <option>Suggestion</option>
+          <option>Bad listing or report</option>
+          <option>Consignment enquiry (selling)</option>
+          <option>Verification issue</option>
+          <option>Payment issue</option>
+          <option>Other</option>
+        </select></label>
+        <label>Subject<input name="subject" minlength="5" maxlength="160" required></label>
+        <label>Details<textarea name="details" rows="6" minlength="20" maxlength="3600" required></textarea></label>
+        <label>Related lot reference (optional)<input name="lot_reference" maxlength="120"></label>
+        <button class="btn" type="submit">Send message</button>
+        <p id="feedback-status" class="subtle" role="status" aria-live="polite"></p>
+      </form>
+    </section>
   </main>
 
   <footer class="site-footer"><p><a href="./fees.html">Fees</a> <a href="./calendar.html">Calendar</a> <a href="./buyer-rules.html">Buyer Rules</a> <a href="./seller-rules.html">Seller Rules</a> <a href="./support.html">Safety</a> <a href="./privacy.html">Privacy</a> <a href="./terms.html">Terms</a> <a href="./prohibited-items.html">Prohibited Items</a></p></footer>
-
   <script src="./js/api.js"></script>
   <script src="./js/common.js"></script>
   <script src="./js/feedback.js"></script>

@@ -1,5 +1,8 @@
 let serverOffsetMs = 0;
 
+const SSO_URL = "https://id.sovdigitalgroup.com/";
+const DEMO_USER_KEY = "dealztt_demo_user";
+
 function money(value) {
   return new Intl.NumberFormat("en-TT", {
     style: "currency",
@@ -29,12 +32,123 @@ function timeLeft(iso) {
   return `${hours}h ${minutes}m ${seconds}s left`;
 }
 
+/* ── Relative "time ago" for the activity feed ──────────────────────────── */
+function timeAgo(ms) {
+  const diff = Math.max(0, nowMs() - ms);
+  const s = Math.floor(diff / 1000);
+  if (s < 60) return `${s}s ago`;
+  const m = Math.floor(s / 60);
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  return `${Math.floor(h / 24)}d ago`;
+}
+
+/* ── Auth ────────────────────────────────────────────────────────────────
+   Real signal: the SSO `auth_state` cookie (set non-HttpOnly by the central
+   auth gate). Demo signal: a local demo-bidder session so the full bid flow
+   is testable before SSO is wired here. */
+function hasAuthCookie() {
+  return document.cookie.split(";").some((c) => c.trim().startsWith("auth_state="));
+}
+function demoUser() {
+  try { return JSON.parse(localStorage.getItem(DEMO_USER_KEY) || "null"); } catch { return null; }
+}
+function isSignedIn() {
+  return hasAuthCookie() || Boolean(demoUser());
+}
+function currentUserName() {
+  const d = demoUser();
+  return d?.name || "You";
+}
+function startDemoSession(name) {
+  const handle = (name && name.trim()) || "demo_bidder";
+  localStorage.setItem(DEMO_USER_KEY, JSON.stringify({ name: handle, since: Date.now() }));
+}
+function signOutDemo() {
+  localStorage.removeItem(DEMO_USER_KEY);
+}
+
+/* ── Auth-aware nav pill ─────────────────────────────────────────────────── */
 function updateAuthPills() {
-  const ssoUrl = "https://id.sovdigitalgroup.com/";
   const pills = document.querySelectorAll("[data-auth-pill], [data-auth-pill-mobile]");
+  const signed = isSignedIn();
   pills.forEach((pill) => {
-    pill.textContent = "Sign In";
-    pill.href = ssoUrl;
+    if (signed) {
+      pill.textContent = demoUser() ? `${currentUserName()} · Sign out` : "My Account";
+      pill.href = demoUser() ? "#signout" : SSO_URL;
+      if (demoUser()) {
+        pill.onclick = (e) => { e.preventDefault(); signOutDemo(); toast("info", "Signed out", "Demo session ended."); setTimeout(() => location.reload(), 500); };
+      }
+    } else {
+      pill.textContent = "Sign In";
+      pill.href = SSO_URL;
+      pill.onclick = null;
+    }
+  });
+}
+
+/* ── Toast notifications ────────────────────────────────────────────────── */
+function toastStack() {
+  let stack = document.getElementById("toast-stack");
+  if (!stack) {
+    stack = document.createElement("div");
+    stack.id = "toast-stack";
+    document.body.appendChild(stack);
+  }
+  return stack;
+}
+const TOAST_ICONS = { ok: "✅", info: "🔔", warn: "⚡", err: "⚠️" };
+function toast(kind, title, msg, ttl = 4200) {
+  const el = document.createElement("div");
+  el.className = `toast ${kind}`;
+  el.innerHTML = `<span class="toast-ic">${TOAST_ICONS[kind] || "🔔"}</span>
+    <div class="toast-body"><div class="toast-title"></div><div class="toast-msg"></div></div>`;
+  el.querySelector(".toast-title").textContent = title;
+  el.querySelector(".toast-msg").textContent = msg || "";
+  toastStack().appendChild(el);
+  const kill = () => { el.classList.add("leaving"); setTimeout(() => el.remove(), 320); };
+  el.addEventListener("click", kill);
+  setTimeout(kill, ttl);
+}
+
+/* ── Sign-in gate ───────────────────────────────────────────────────────
+   Returns true if allowed to proceed; otherwise shows the gate and returns
+   false. Enforces: no bidding / watching / paying unless signed in. */
+function requireSignIn(actionLabel = "bid") {
+  if (isSignedIn()) return true;
+  openSignInGate(actionLabel);
+  return false;
+}
+function closeSignInGate() {
+  document.getElementById("gate-overlay")?.remove();
+}
+function openSignInGate(actionLabel) {
+  closeSignInGate();
+  const overlay = document.createElement("div");
+  overlay.id = "gate-overlay";
+  overlay.className = "gate-overlay";
+  const demoAvailable = window.DEALZTT_DEMO_MODE;
+  overlay.innerHTML = `
+    <div class="gate-card" role="dialog" aria-modal="true" aria-label="Sign in required">
+      <div class="gate-emoji">🔐</div>
+      <h3>Sign in to ${actionLabel}</h3>
+      <p>You need a DealzTT account to ${actionLabel}. Bidding, watchlists, and payments are only available to signed-in members.</p>
+      <div class="gate-actions">
+        <a class="btn" href="${SSO_URL}">Sign in with SOV ID</a>
+        ${demoAvailable ? '<button class="btn ghost" id="gate-demo" type="button">Continue as demo bidder</button>' : ""}
+        <button class="btn ghost" id="gate-cancel" type="button">Not now</button>
+      </div>
+    </div>`;
+  overlay.addEventListener("click", (e) => { if (e.target === overlay) closeSignInGate(); });
+  document.body.appendChild(overlay);
+  document.getElementById("gate-cancel")?.addEventListener("click", closeSignInGate);
+  document.getElementById("gate-demo")?.addEventListener("click", () => {
+    startDemoSession("demo_bidder");
+    closeSignInGate();
+    updateAuthPills();
+    toast("ok", "Demo session started", "You can now place demo bids. This is preview only.");
+    document.dispatchEvent(new CustomEvent("dealztt:signedin"));
   });
 }
 
@@ -50,7 +164,6 @@ function initMobileNav() {
     toggle.setAttribute("aria-expanded", String(isOpen));
   });
 
-  // Close drawer when a link inside it is clicked
   drawer.addEventListener("click", (e) => {
     if (e.target.tagName === "A") {
       drawer.classList.remove("open");
@@ -70,6 +183,11 @@ window.AuctionUi = {
   nowMs,
   setServerTimeOffset,
   timeLeft,
+  timeAgo,
   updateAuthPills,
   initMobileNav,
+  isSignedIn,
+  requireSignIn,
+  currentUserName,
+  toast,
 };

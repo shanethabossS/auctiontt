@@ -36,13 +36,11 @@
     <a class="brand" href="./index.html">DealzTT</a>
     <nav>
       <a href="./index.html">Home</a>
-      <a href="./categories.html">Categories</a>
       <a href="./browse.html">Browse</a>
       <a href="./how-it-works.html">How It Works</a>
       <a href="./sell.html">Sell</a>
-      <a href="./feedback.html">Feedback</a>
+      <a href="./feedback.html">Contact</a>
       <a data-auth-pill href="https://id.sovdigitalgroup.com/">Sign In</a>
-
     </nav>
     <button class="nav-hamburger" id="nav-toggle" aria-label="Toggle menu">
       <span></span><span></span><span></span>
@@ -50,14 +48,12 @@
   </header>
   <div class="nav-mobile" id="nav-mobile">
     <a href="./index.html">Home</a>
-    <a href="./categories.html">Categories</a>
     <a href="./browse.html">Browse</a>
     <a href="./how-it-works.html">How It Works</a>
     <a href="./sell.html">Sell</a>
-    <a href="./feedback.html">Feedback</a>
+    <a href="./feedback.html">Contact</a>
     <div class="nav-mobile-divider"></div>
     <a data-auth-pill-mobile href="https://id.sovdigitalgroup.com/">Sign In</a>
-
   </div>
 
   <main class="page-main">
@@ -99,9 +95,10 @@
 
         <section class="lot-detail-grid">
           <article class="card lot-panel">
-            <h2>Lot availability</h2>
-            <div class="lot-actions lot-detail-actions">
-              <span class="coming-next" data-testid="listing-primary-action">Bidding will be enabled only when the complete auction rules and payment flow are published.</span>
+            <h2>Place your bid</h2>
+            <div id="bid-panel"></div>
+            <div class="lot-actions lot-detail-actions" style="margin-top:14px;">
+              <button id="watch-lot" type="button" class="btn ghost" data-testid="listing-watch-button">Add to watchlist</button>
               <button id="share-lot" type="button" class="btn ghost" data-testid="listing-share-button">Share Lot</button>
               <a id="report-lot" href="#" target="_blank" rel="noopener noreferrer" class="btn ghost" data-testid="listing-report-button">Report Lot</a>
             </div>
@@ -151,10 +148,12 @@
     </section>
   </main>
 
-  <footer class="site-footer"><p><a href="./browse.html">Browse</a> <a href="./how-it-works.html">How It Works</a> <a href="./buyer.html">Buyer Hub</a></p></footer>
+  <footer class="site-footer"><p><a href="./browse.html">Browse</a> <a href="./how-it-works.html">How It Works</a> <a href="./sell.html">Sell</a> <a href="./feedback.html">Contact</a> Powered by <a href="https://sovdigitalgroup.com" target="_blank" rel="noreferrer">SOV Digital Group</a>.</p></footer>
 
+  <script src="./js/demo-data.js"></script>
   <script src="./js/api.js"></script>
   <script src="./js/common.js"></script>
+  <script src="./js/lot-card.js"></script>
   <script src="./js/lot.js"></script>
 </body>
 </html>

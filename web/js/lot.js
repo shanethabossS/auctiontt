@@ -1,3 +1,8 @@
+/* ===========================================================================
+   DealzTT — Lot detail: live bid panel, sign-in gating, watchlist, outbid
+   notifications, share, report. Demo data in DEMO_MODE; real feed live.
+   =========================================================================== */
+
 const loadingNode = document.getElementById("lot-loading");
 const detailNode = document.getElementById("lot-detail");
 const errorNode = document.getElementById("lot-error");
@@ -16,6 +21,8 @@ const statusBadgeNode = document.getElementById("lot-status-badge");
 const regionNode = document.getElementById("lot-region");
 const urgencyNode = document.getElementById("lot-urgency");
 const sellerStatusNode = document.getElementById("lot-seller-status");
+const bidPanel = document.getElementById("bid-panel");
+const watchButton = document.getElementById("watch-lot");
 const shareButton = document.getElementById("share-lot");
 const reportLink = document.getElementById("report-lot");
 const jsonLdNode = document.getElementById("lot-jsonld");
@@ -23,134 +30,121 @@ const relatedNode = document.getElementById("related-lots");
 const relatedGrid = document.getElementById("related-lots-grid");
 const relatedCopy = document.getElementById("related-lots-copy");
 
+const LOT_FALLBACK = window.AuctionCard.FALLBACK_IMG;
+let outbidTimer = null;
+
+/* ── Bid panel ────────────────────────────────────────────────────────────── */
+function renderBidPanel(lot) {
+  const ended = window.AuctionUi.timeLeft(lot.ends_at) === "Ended";
+  if (ended) {
+    bidPanel.innerHTML = `<div class="bid-locked">This auction has ended. <a class="btn btn-sm" href="./browse.html">Browse live lots</a></div>`;
+    return;
+  }
+  const floor = Number(lot.current_bid || lot.starting_bid || 0);
+  const minNext = floor + window.AuctionApi.minIncrement(floor);
+  bidPanel.innerHTML = `
+    <p class="subtle" style="margin-bottom:8px;">Current bid <strong style="color:var(--green-neon);">${window.AuctionUi.money(floor)}</strong> · ${Number(lot.bid_count || 0)} bids</p>
+    <form class="bid-inline js-bid-form">
+      <input type="number" class="js-bid-amount" min="${minNext}" step="1" placeholder="${minNext.toLocaleString("en-TT")}+" aria-label="Your bid (TTD)" />
+      <button class="btn" type="submit">Place bid</button>
+    </form>
+    <p class="bid-hint">Minimum next bid ${window.AuctionUi.money(minNext)}${window.AuctionUi.isSignedIn() ? "" : " · sign in required"}</p>`;
+}
+
+/* ── Outbid notification (demo): a rival tops you shortly after you bid ────── */
+function scheduleOutbid(lot) {
+  if (!window.AuctionApi.AuctionData.isDemo()) return;
+  clearTimeout(outbidTimer);
+  outbidTimer = setTimeout(() => {
+    if (window.AuctionUi.timeLeft(lot.ends_at) === "Ended") return;
+    const bump = window.AuctionApi.minIncrement(Number(lot.current_bid));
+    lot.current_bid = Number(lot.current_bid) + bump;
+    lot.bid_count = Number(lot.bid_count || 0) + 1;
+    priceNode.textContent = window.AuctionUi.money(lot.current_bid);
+    priceNode.classList.remove("price-pop"); void priceNode.offsetWidth; priceNode.classList.add("price-pop");
+    bidsNode.textContent = `${lot.bid_count} bids`;
+    renderBidPanel(lot);
+    window.AuctionUi.toast("warn", "You've been outbid!", `Someone bid ${window.AuctionUi.money(lot.current_bid)} on ${lot.title}. Bid again to retake the lead.`);
+  }, 6500);
+}
+
+/* ── Related lots ─────────────────────────────────────────────────────────── */
 function renderRelated(lot, rows) {
-  const related = rows.filter((row) => row.id !== lot.id && new Date(row.ends_at).getTime() > Date.now()).sort((a, b) => Number(b.category_name === lot.category_name) - Number(a.category_name === lot.category_name) || Number(b.city === lot.city) - Number(a.city === lot.city) || new Date(a.ends_at) - new Date(b.ends_at)).slice(0, 3);
+  const related = rows
+    .filter((r) => r.id !== lot.id && new Date(r.ends_at).getTime() > window.AuctionUi.nowMs())
+    .sort((a, b) => Number(b.category_slug === lot.category_slug) - Number(a.category_slug === lot.category_slug) || new Date(a.ends_at) - new Date(b.ends_at))
+    .slice(0, 3);
   if (!related.length) return;
   relatedNode.hidden = false;
-  relatedCopy.textContent = "Related by published category, location, and ending time. This is not personalized.";
-  related.forEach((row) => { const link = document.createElement("a"); link.className = "btn ghost"; link.href = `./lot.html?id=${encodeURIComponent(row.id)}`; link.textContent = row.title; relatedGrid.appendChild(link); });
+  relatedCopy.textContent = "Related by category, location, and ending time.";
+  relatedGrid.innerHTML = "";
+  related.forEach((r) => relatedGrid.appendChild(window.AuctionCard.buildLotCard(r)));
 }
 
-function closeReportModal() {
-  const overlay = document.getElementById("report-modal-overlay");
-  if (overlay) overlay.remove();
-}
-
+/* ── Report modal (dark theme) ────────────────────────────────────────────── */
+function closeReportModal() { document.getElementById("report-modal-overlay")?.remove(); }
 async function submitLotReport(lot, reason, details, contactEmail, form, statusNode, submitButton) {
   submitButton.disabled = true;
   statusNode.textContent = "Submitting report...";
-
   try {
     const response = await fetch("https://api.sovdigitalgroup.com/api/reports", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        site: "dealztt",
-        target_type: "lot",
-        target_id: String(lot.id),
-        reason,
-        details,
-        contact_email: contactEmail,
-      }),
+      body: JSON.stringify({ site: "dealztt", target_type: "lot", target_id: String(lot.id), reason, details, contact_email: contactEmail }),
     });
-
     const payload = await response.json().catch(() => ({}));
-    if (!response.ok) {
-      throw new Error(payload.error || "Could not submit report.");
-    }
-
+    if (!response.ok) throw new Error(payload.error || "Could not submit report.");
     statusNode.textContent = "Report submitted. Thank you.";
     form.reset();
+    window.AuctionUi.toast("ok", "Report sent", "Thanks — the DealzTT team will review this lot.");
     window.setTimeout(closeReportModal, 900);
   } catch (err) {
     statusNode.textContent = err.message || "Could not submit report.";
     submitButton.disabled = false;
   }
 }
-
 function openReportModal(lot) {
   closeReportModal();
-
   const overlay = document.createElement("div");
   overlay.id = "report-modal-overlay";
-  overlay.style.cssText = "position:fixed;inset:0;background:rgba(17,24,39,.72);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9999;";
-
-  const modal = document.createElement("div");
-  modal.style.cssText = "width:min(100%,480px);background:#fff;border-radius:20px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.35);";
-
-  const title = document.createElement("h3");
-  title.textContent = "Report lot";
-  title.style.cssText = "margin:0 0 12px;font-size:1.2rem;";
-
-  const form = document.createElement("form");
-  form.style.cssText = "display:flex;flex-direction:column;gap:12px;";
-
-  const reason = document.createElement("select");
-  reason.required = true;
-  reason.setAttribute("aria-label", "Report reason");
-  reason.style.cssText = "padding:10px 12px;border:1px solid #d1d5db;border-radius:12px;";
-  [
-    ["", "Select a reason"],
-    ["spam", "Spam"],
-    ["scam", "Scam"],
-    ["inappropriate", "Inappropriate"],
-    ["illegal", "Illegal"],
-    ["harassment", "Harassment"],
-    ["other", "Other"],
-  ].forEach(([value, label]) => {
-    const option = document.createElement("option");
-    option.value = value;
-    option.textContent = label;
-    if (!value) option.disabled = true;
-    if (!value) option.selected = true;
-    reason.appendChild(option);
-  });
-
-  const details = document.createElement("textarea");
-  details.rows = 4;
-  details.maxLength = 2000;
-  details.placeholder = "Additional details (optional)";
-  details.setAttribute("aria-label", "Additional report details");
-  details.style.cssText = "padding:10px 12px;border:1px solid #d1d5db;border-radius:12px;";
-
-  const email = document.createElement("input");
-  email.type = "email";
-  email.placeholder = "Your email (optional if signed out)";
-  email.setAttribute("aria-label", "Contact email");
-  email.style.cssText = "padding:10px 12px;border:1px solid #d1d5db;border-radius:12px;";
-
-  const statusNode = document.createElement("p");
-  statusNode.style.cssText = "margin:0;font-size:.9rem;color:#4b5563;";
-
-  const actions = document.createElement("div");
-  actions.style.cssText = "display:flex;gap:10px;justify-content:flex-end;";
-
-  const cancelButton = document.createElement("button");
-  cancelButton.type = "button";
-  cancelButton.textContent = "Cancel";
-  cancelButton.style.cssText = "padding:10px 14px;border:1px solid #d1d5db;border-radius:999px;background:#fff;";
-  cancelButton.onclick = closeReportModal;
-
-  const submitButton = document.createElement("button");
-  submitButton.type = "submit";
-  submitButton.textContent = "Submit Report";
-  submitButton.style.cssText = "padding:10px 14px;border:none;border-radius:999px;background:#dc2626;color:#fff;font-weight:600;";
-
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    submitLotReport(lot, reason.value, details.value.trim(), email.value.trim().toLowerCase(), form, statusNode, submitButton);
-  });
-
-  actions.append(cancelButton, submitButton);
-  form.append(reason, details, email, statusNode, actions);
-  modal.append(title, form);
-  overlay.appendChild(modal);
-  overlay.addEventListener("click", (event) => {
-    if (event.target === overlay) closeReportModal();
-  });
+  overlay.className = "gate-overlay";
+  overlay.innerHTML = `
+    <div class="gate-card" style="text-align:left;">
+      <h3 style="margin-bottom:14px;">Report this lot</h3>
+      <form id="report-form" style="display:flex;flex-direction:column;gap:12px;">
+        <select id="rp-reason" required class="fi-select" aria-label="Report reason"
+          style="padding:10px 12px;border-radius:10px;background:var(--bg);border:1px solid var(--border-md);color:var(--text);">
+          <option value="" disabled selected>Select a reason</option>
+          <option value="spam">Spam</option>
+          <option value="scam">Scam or fraud</option>
+          <option value="inappropriate">Inappropriate</option>
+          <option value="illegal">Illegal / prohibited item</option>
+          <option value="misleading">Misleading listing</option>
+          <option value="other">Other</option>
+        </select>
+        <textarea id="rp-details" rows="4" maxlength="2000" placeholder="Additional details (optional)"
+          style="padding:10px 12px;border-radius:10px;background:var(--bg);border:1px solid var(--border-md);color:var(--text);"></textarea>
+        <input id="rp-email" type="email" placeholder="Your email (optional)"
+          style="padding:10px 12px;border-radius:10px;background:var(--bg);border:1px solid var(--border-md);color:var(--text);" />
+        <p id="rp-status" class="subtle" style="margin:0;"></p>
+        <div style="display:flex;gap:10px;justify-content:flex-end;">
+          <button type="button" id="rp-cancel" class="btn ghost">Cancel</button>
+          <button type="submit" id="rp-submit" class="btn">Submit report</button>
+        </div>
+      </form>
+    </div>`;
+  overlay.addEventListener("click", (e) => { if (e.target === overlay) closeReportModal(); });
   document.body.appendChild(overlay);
+  document.getElementById("rp-cancel").onclick = closeReportModal;
+  const form = document.getElementById("report-form");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    submitLotReport(lot, document.getElementById("rp-reason").value, document.getElementById("rp-details").value.trim(),
+      document.getElementById("rp-email").value.trim().toLowerCase(), form, document.getElementById("rp-status"), document.getElementById("rp-submit"));
+  });
 }
 
+/* ── SEO meta helpers ─────────────────────────────────────────────────────── */
 function upsertMeta(selector, attr, value) {
   let node = document.head.querySelector(selector);
   if (!node) {
@@ -160,22 +154,22 @@ function upsertMeta(selector, attr, value) {
   }
   node.setAttribute("content", value);
 }
-
 function upsertCanonical(url) {
   let node = document.head.querySelector('link[rel="canonical"]');
-  if (!node) {
-    node = document.createElement("link");
-    node.setAttribute("rel", "canonical");
-    document.head.appendChild(node);
-  }
+  if (!node) { node = document.createElement("link"); node.setAttribute("rel", "canonical"); document.head.appendChild(node); }
   node.setAttribute("href", url);
 }
+function lotHref(id) { return `${window.location.origin}/lot.html?id=${encodeURIComponent(id)}`; }
 
-function getLotId() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get("id");
+async function shareLot(lot) {
+  const url = lotHref(lot.id);
+  const text = `Check this lot on DealzTT: ${lot.title}`;
+  if (navigator.share) { try { await navigator.share({ title: lot.title, text, url }); return; } catch {} }
+  if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(url); window.AuctionUi.toast("info", "Link copied", "Lot link copied to clipboard."); return; }
+  window.prompt("Copy lot URL:", url);
 }
 
+function getLotId() { return new URLSearchParams(window.location.search).get("id"); }
 function showLotUnavailable(title, message) {
   loadingNode.style.display = "none";
   detailNode.style.display = "none";
@@ -184,57 +178,52 @@ function showLotUnavailable(title, message) {
   errorNode.hidden = false;
 }
 
-function lotHref(id) {
-  return `${window.location.origin}/lot.html?id=${encodeURIComponent(id)}`;
-}
-
-async function shareLot(lot) {
-  const url = lotHref(lot.id);
-  const text = `Check this lot on DealzTT: ${lot.title}`;
-  if (navigator.share) {
-    try {
-      await navigator.share({ title: lot.title, text, url });
-      return;
-    } catch {
-      // fall back to clipboard
-    }
-  }
-  if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(url);
-    alert("Lot link copied to clipboard.");
-    return;
-  }
-  window.prompt("Copy lot URL:", url);
-}
-
 function renderLot(lot) {
   const url = lotHref(lot.id);
   const description = `${lot.title}${lot.category_name ? ` in ${lot.category_name}` : ""}${lot.city ? ` from ${lot.city}` : ""}. Current bid on DealzTT Trinidad & Tobago auctions.`;
-  const isVerifiedSeller = Boolean(lot.seller_verified);
   const bidCount = Number(lot.bid_count || 0);
   const timeText = window.AuctionUi.timeLeft(lot.ends_at);
-  const fullDescription = lot.description?.trim() || "This lot is live in the DealzTT marketplace. Review the current bid, seller details, and location before jumping into bidding.";
+  const fullDescription = lot.description?.trim() || "This lot is live in the DealzTT marketplace. Review the current bid, seller details, and location before bidding.";
 
-  imageNode.src = lot.image_url || "https://images.unsplash.com/photo-1499696010180-025ef6e1a8f9?auto=format&fit=crop&w=1200&q=80";
+  // wire the detail node for the shared delegated bid handler
+  detailNode.dataset.lotId = lot.id;
+  priceNode.dataset.price = "1";
+  bidsNode.classList.add("lot-bids");
+
+  imageNode.src = lot.image_url || LOT_FALLBACK;
+  imageNode.onerror = () => { imageNode.onerror = null; imageNode.src = LOT_FALLBACK; };
   categoryNode.textContent = lot.category_name || "General";
   titleNode.textContent = lot.title;
-  sellerNode.textContent = `${lot.seller_name || "Seller"}${lot.seller_verified ? " | Verified" : ""}`;
+  sellerNode.textContent = `${lot.seller_name || "Seller"}${lot.seller_verified ? " · Verified" : ""}`;
   priceNode.textContent = window.AuctionUi.money(lot.current_bid || lot.starting_bid);
   timeNode.textContent = timeText;
+  timeNode.dataset.ends = lot.ends_at;
   locationNode.textContent = `${lot.city || ""} ${lot.state || ""}`.trim() || "Location not specified";
   bidsNode.textContent = `${bidCount} bids`;
   descriptionNode.textContent = fullDescription;
-  statusBadgeNode.textContent = timeText === "Ended" ? "Auction ended" : "Published lot";
-  statusBadgeNode.className = `chip ${timeText === "Ended" ? "chip-red" : "chip-green"}`;
+  statusBadgeNode.textContent = timeText === "Ended" ? "Auction ended" : (lot.is_demo ? "Demo lot" : "Live lot");
+  statusBadgeNode.className = `chip ${timeText === "Ended" ? "chip-red" : (lot.is_demo ? "chip-pink" : "chip-green")}`;
   regionNode.textContent = `${lot.city || "Trinidad & Tobago"}${lot.state ? `, ${lot.state}` : ""}`;
   urgencyNode.textContent = `${bidCount} recorded bid${bidCount === 1 ? "" : "s"}`;
-  sellerStatusNode.textContent = isVerifiedSeller ? "Verified seller" : "Marketplace seller";
-  reportLink.href = "#";
-  reportLink.onclick = (event) => {
-    event.preventDefault();
-    openReportModal(lot);
+  sellerStatusNode.textContent = lot.seller_verified ? "Verified seller" : "Marketplace seller";
+
+  renderBidPanel(lot);
+
+  watchButton.onclick = () => {
+    if (!window.AuctionUi.requireSignIn("use your watchlist")) return;
+    window.AuctionUi.toast("ok", "Added to watchlist", `We'll notify you about ${lot.title}.`);
   };
   shareButton.onclick = () => shareLot(lot);
+  reportLink.href = "#";
+  reportLink.onclick = (e) => { e.preventDefault(); openReportModal(lot); };
+
+  // when the user places a bid on this lot, arm the outbid notification
+  document.addEventListener("dealztt:bid", (e) => {
+    if (e.detail.who === window.AuctionUi.currentUserName() && e.detail.lot === lot.title) {
+      renderBidPanel(lot);
+      scheduleOutbid(lot);
+    }
+  });
 
   document.title = `${lot.title} | DealzTT Auctions`;
   upsertCanonical(url);
@@ -249,23 +238,9 @@ function renderLot(lot) {
 
   if (jsonLdNode) {
     jsonLdNode.textContent = JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "Product",
-      name: lot.title,
-      image: imageNode.src,
-      description,
-      category: lot.category_name || "Auction lot",
-      brand: {
-        "@type": "Brand",
-        name: "DealzTT"
-      },
-      offers: {
-        "@type": "Offer",
-        priceCurrency: "TTD",
-        price: Number(lot.current_bid || lot.starting_bid || 0),
-        availability: "https://schema.org/InStock",
-        url
-      }
+      "@context": "https://schema.org", "@type": "Product", name: lot.title, image: imageNode.src, description,
+      category: lot.category_name || "Auction lot", brand: { "@type": "Brand", name: "DealzTT" },
+      offers: { "@type": "Offer", priceCurrency: "TTD", price: Number(lot.current_bid || lot.starting_bid || 0), availability: "https://schema.org/InStock", url },
     });
   }
 }
@@ -274,25 +249,11 @@ function renderLot(lot) {
   try {
     window.AuctionUi.updateAuthPills();
     const id = getLotId();
-    if (!id) {
-      showLotUnavailable("Choose a published lot to view its details.", "Browse the published DealzTT catalogue to find available lots.");
-      return;
-    }
-
-    const rows = await window.AuctionApi.apiFetch(
-      `/v_lot_feed?select=id,title,description,image_url,current_bid,starting_bid,bid_count,ends_at,city,state,seller_name,seller_verified,category_name&id=eq.${id}`
-    );
-    const lot = Array.isArray(rows) ? rows[0] : null;
-    if (!lot) {
-      showLotUnavailable("This lot is no longer available.", "It may have ended or been removed from the published catalogue. Browse current lots instead.");
-      return;
-    }
-
+    if (!id) { showLotUnavailable("Choose a published lot to view its details.", "Browse the published DealzTT catalogue to find available lots."); return; }
+    const lot = await window.AuctionApi.AuctionData.getLot(id);
+    if (!lot) { showLotUnavailable("This lot is no longer available.", "It may have ended or been removed from the catalogue. Browse current lots instead."); return; }
     renderLot(lot);
-    try {
-      const relatedRows = await window.AuctionApi.apiFetch("/v_lot_feed?select=id,title,ends_at,category_name,city&order=ends_at.asc");
-      renderRelated(lot, relatedRows);
-    } catch {}
+    try { renderRelated(lot, await window.AuctionApi.AuctionData.getLots()); } catch {}
     detailNode.style.display = "block";
     loadingNode.style.display = "none";
   } catch {

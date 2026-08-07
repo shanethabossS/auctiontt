@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Browse Auctions | DealzTT Trinidad & Tobago</title>
-  <meta name="description" content="Browse active DealzTT auctions by category, location, ending time, and vehicle-focused inventory across Trinidad and Tobago." />
+  <meta name="description" content="Browse active DealzTT auctions by category, location, and ending time. Sort by price or time left across Trinidad and Tobago." />
   <meta name="robots" content="index,follow" />
   <link rel="canonical" href="https://dealztt.com/browse.html" />
   <meta property="og:title" content="Browse Auctions | DealzTT" />
-  <meta property="og:description" content="Find active auctions and vehicle-focused inventory on DealzTT." />
+  <meta property="og:description" content="Find active auctions and big-ticket inventory on DealzTT." />
   <meta property="og:type" content="website" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,13 +20,11 @@
     <a class="brand" href="./index.html">DealzTT</a>
     <nav>
       <a href="./index.html">Home</a>
-      <a href="./categories.html">Categories</a>
       <a href="./browse.html" class="active">Browse</a>
       <a href="./how-it-works.html">How It Works</a>
       <a href="./sell.html">Sell</a>
-      <a href="./feedback.html">Feedback</a>
+      <a href="./feedback.html">Contact</a>
       <a data-auth-pill href="https://id.sovdigitalgroup.com/">Sign In</a>
-
     </nav>
     <button class="nav-hamburger" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
       <span></span><span></span><span></span>
@@ -34,34 +32,32 @@
   </header>
   <div class="nav-mobile" id="nav-mobile">
     <a href="./index.html">Home</a>
-    <a href="./categories.html">Categories</a>
     <a href="./browse.html">Browse</a>
     <a href="./how-it-works.html">How It Works</a>
     <a href="./sell.html">Sell</a>
-    <a href="./feedback.html">Feedback</a>
+    <a href="./feedback.html">Contact</a>
     <div class="nav-mobile-divider"></div>
     <a data-auth-pill-mobile href="https://id.sovdigitalgroup.com/">Sign In</a>
-
   </div>
 
   <main class="page-main">
     <section class="page-intro browse-intro">
       <p class="eyebrow">Auction discovery</p>
-      <h1>Find the next DealzTT lot.</h1>
-      <p>Search currently published auction lots by category and location. Vehicle, machinery, repossession, and liquidation inventory is highlighted as it becomes available.</p>
+      <h1>Find your next DealzTT lot.</h1>
+      <p>Search active auction lots by category and location, then sort by price or time left. Vehicles, machinery, repossessions, and liquidations are highlighted as high-value inventory.</p>
     </section>
 
     <section class="vehicle-focus" aria-labelledby="vehicle-focus-title">
       <div>
         <p class="eyebrow">High-value inventory</p>
         <h2 id="vehicle-focus-title">Vehicles, machinery, repossessions, and liquidations</h2>
-        <p class="subtle">These inventory types need more condition and document detail before bidding. Use the finder to see published lots; inspection records and sale schedules will appear only when the auction team publishes them.</p>
+        <p class="subtle">Big-ticket lots. Tap a filter to jump straight to that category, then sort by price or ending time.</p>
       </div>
-      <div class="quick-filter-group" aria-label="Vehicle-focused filters">
-        <button type="button" class="chip filter-chip" data-focus="vehicle">Vehicles</button>
-        <button type="button" class="chip filter-chip" data-focus="machinery">Machinery</button>
-        <button type="button" class="chip filter-chip" data-focus="repossession">Repossessions</button>
-        <button type="button" class="chip filter-chip" data-focus="liquidation">Liquidations</button>
+      <div class="quick-filter-group" aria-label="Category quick filters">
+        <button type="button" class="chip filter-chip" data-focus="vehicles">🚗 Vehicles</button>
+        <button type="button" class="chip filter-chip" data-focus="machinery">🏗️ Machinery</button>
+        <button type="button" class="chip filter-chip" data-focus="repossessions">🏦 Repossessions</button>
+        <button type="button" class="chip filter-chip" data-focus="liquidations">📦 Liquidations</button>
       </div>
     </section>
 
@@ -85,12 +81,20 @@
           <select id="browse-timing">
             <option value="all">All active lots</option>
             <option value="ending">Ending within 24 hours</option>
-            <option value="upcoming">Upcoming schedules</option>
           </select>
         </label>
         <button class="btn" type="submit">Update results</button>
       </form>
-      <p id="browse-status" class="subtle" role="status" aria-live="polite">Loading published auction inventory...</p>
+      <div class="sort-bar" id="browse-sort" role="group" aria-label="Sort lots">
+        <span class="sort-label">Sort:</span>
+        <div class="seg">
+          <button type="button" data-sort="ending" class="is-active">Ending soon</button>
+          <button type="button" data-sort="price-high">Price: high</button>
+          <button type="button" data-sort="price-low">Price: low</button>
+          <button type="button" data-sort="hot">Most bids</button>
+        </div>
+      </div>
+      <p id="browse-status" class="subtle" role="status" aria-live="polite">Loading live auction inventory...</p>
     </section>
 
     <section id="browse-empty" class="empty-state" hidden aria-labelledby="browse-empty-title">
@@ -105,7 +109,7 @@
 
     <section id="browse-results-section" aria-labelledby="browse-results-title">
       <div class="section-row">
-        <h2 id="browse-results-title">Published lots</h2>
+        <h2 id="browse-results-title">Live lots</h2>
         <p id="browse-count" class="subtle"></p>
       </div>
       <div id="browse-grid" class="lot-grid"></div>
@@ -113,11 +117,13 @@
   </main>
 
   <footer class="site-footer">
-    <p>DealzTT &mdash; Trinidad & Tobago's local auction marketplace. <a href="./browse.html">Browse</a> <a href="./how-it-works.html">How It Works</a> <a href="./buyer.html">Buyer Hub</a> Powered by <a href="https://sovdigitalgroup.com" target="_blank" rel="noreferrer">SOV Digital Group</a>.</p>
+    <p>DealzTT &mdash; Trinidad &amp; Tobago's local auction marketplace. <a href="./browse.html">Browse</a> <a href="./how-it-works.html">How It Works</a> <a href="./sell.html">Sell</a> <a href="./feedback.html">Contact</a> Powered by <a href="https://sovdigitalgroup.com" target="_blank" rel="noreferrer">SOV Digital Group</a>.</p>
   </footer>
 
+  <script src="./js/demo-data.js"></script>
   <script src="./js/api.js"></script>
   <script src="./js/common.js"></script>
+  <script src="./js/lot-card.js"></script>
   <script src="./js/browse.js"></script>
 </body>
 </html>

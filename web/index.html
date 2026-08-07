@@ -4,12 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DealzTT | Online Auctions & Local Deals in Trinidad & Tobago</title>
-  <meta name="description" content="Discover published local auction inventory across Trinidad & Tobago and prepare for DealzTT's marketplace launch." />
+  <meta name="description" content="Bid on vehicles, machinery, repossessions, liquidations, and electronics across Trinidad & Tobago. Live local auctions on DealzTT." />
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
-  <meta name="keywords" content="Trinidad auctions, Tobago auctions, online auctions Trinidad, local deals Trinidad, bid online Trinidad and Tobago, DealzTT" />
+  <meta name="keywords" content="Trinidad auctions, Tobago auctions, online auctions Trinidad, repossessed vehicles Trinidad, liquidation Trinidad, bid online Trinidad and Tobago, DealzTT" />
   <link rel="canonical" href="https://dealztt.com/" />
   <meta property="og:title" content="DealzTT | Online Auctions & Local Deals in Trinidad & Tobago" />
-  <meta property="og:description" content="Browse published Trinidad & Tobago auction inventory and DealzTT's marketplace launch guidance." />
+  <meta property="og:description" content="Bid on published Trinidad & Tobago auction inventory — vehicles, machinery, repossessions, liquidations, and more." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://dealztt.com/" />
   <meta property="og:site_name" content="DealzTT" />
@@ -17,7 +17,7 @@
   <meta property="og:image" content="https://dealztt.com/og-cover.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="DealzTT | Online Auctions & Local Deals in Trinidad & Tobago" />
-  <meta name="twitter:description" content="Browse published Trinidad & Tobago auction inventory and marketplace launch guidance." />
+  <meta name="twitter:description" content="Bid on Trinidad & Tobago auction inventory on DealzTT." />
   <meta name="twitter:image" content="https://dealztt.com/og-cover.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,7 +42,7 @@
         "name": "DealzTT",
         "url": "https://dealztt.com/",
         "image": "https://dealztt.com/og-cover.jpg",
-        "description": "DealzTT is an online auction and local deals marketplace for Trinidad & Tobago — electronics, tools, vehicle parts, home goods, and more.",
+        "description": "DealzTT is an online auction marketplace for Trinidad & Tobago — vehicles, machinery, repossessions, liquidations, electronics, and home & business equipment.",
         "priceRange": "TT$",
         "areaServed": [
           { "@type": "Country", "name": "Trinidad and Tobago" },
@@ -50,7 +50,7 @@
           { "@type": "AdministrativeArea", "name": "Tobago" }
         ],
         "address": { "@type": "PostalAddress", "addressCountry": "TT", "addressRegion": "Trinidad and Tobago" },
-        "knowsAbout": ["Online auctions", "Local deals", "Bidding", "Trinidad classifieds", "Tobago classifieds"]
+        "knowsAbout": ["Online auctions", "Repossessions", "Liquidations", "Vehicle auctions", "Trinidad classifieds", "Tobago classifieds"]
       },
       {
         "@type": "WebSite",
@@ -62,17 +62,9 @@
         "publisher": { "@id": "https://dealztt.com/#org" },
         "potentialAction": {
           "@type": "SearchAction",
-          "target": { "@type": "EntryPoint", "urlTemplate": "https://dealztt.com/categories.html?q={search_term_string}" },
+          "target": { "@type": "EntryPoint", "urlTemplate": "https://dealztt.com/browse.html?q={search_term_string}" },
           "query-input": "required name=search_term_string"
         }
-      },
-      {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Home",       "item": "https://dealztt.com/" },
-          { "@type": "ListItem", "position": 2, "name": "Categories", "item": "https://dealztt.com/categories.html" },
-          { "@type": "ListItem", "position": 3, "name": "Sell",       "item": "https://dealztt.com/sell.html" }
-        ]
       }
     ]
   }
@@ -83,40 +75,36 @@
     <a class="brand" href="./index.html">DealzTT</a>
     <nav>
       <a href="./index.html" class="active">Home</a>
-      <a href="./categories.html">Categories</a>
       <a href="./browse.html">Browse</a>
       <a href="./how-it-works.html">How It Works</a>
       <a href="./sell.html">Sell</a>
-      <a href="./feedback.html">Feedback</a>
+      <a href="./feedback.html">Contact</a>
       <a data-auth-pill href="https://id.sovdigitalgroup.com/">Sign In</a>
-
     </nav>
-    <button class="nav-hamburger" id="nav-toggle" aria-label="Toggle menu">
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </header>
   <div class="nav-mobile" id="nav-mobile">
     <a href="./index.html">Home</a>
-    <a href="./categories.html">Categories</a>
     <a href="./browse.html">Browse</a>
     <a href="./how-it-works.html">How It Works</a>
     <a href="./sell.html">Sell</a>
-    <a href="./feedback.html">Feedback</a>
+    <a href="./feedback.html">Contact</a>
     <div class="nav-mobile-divider"></div>
     <a data-auth-pill-mobile href="https://id.sovdigitalgroup.com/">Sign In</a>
-
   </div>
 
   <section class="hero hero-trinidad">
     <div class="hero-copy">
-      <p class="eyebrow">DealzTT | Trinidad & Tobago</p>
-      <h1>Local auction inventory is preparing to launch in T&amp;T.</h1>
-      <p class="hero-text">DealzTT is building a clearer way to discover vehicles, machinery, repossessions, liquidations, and local goods as approved lots are published.</p>
+      <p class="eyebrow">DealzTT · Trinidad &amp; Tobago</p>
+      <h1>Bid local. Win big. <span class="text-cyan">Vehicles to electronics.</span></h1>
+      <p class="hero-text">DealzTT is the local auction marketplace for Trinidad &amp; Tobago — repossessed vehicles, machinery, liquidation stock, electronics, and home &amp; business equipment. No reserves, timed auctions, TTD pricing.</p>
 
       <div class="hero-highlights" aria-label="Marketplace highlights">
         <div class="hero-highlight">
-          <span class="hero-highlight-value">Timed</span>
-          <span class="hero-highlight-label">Auction format</span>
+          <span class="hero-highlight-value">No reserve</span>
+          <span class="hero-highlight-label">Every lot</span>
         </div>
         <div class="hero-highlight">
           <span class="hero-highlight-value">TTD</span>
@@ -124,13 +112,13 @@
         </div>
         <div class="hero-highlight">
           <span class="hero-highlight-value">Island-wide</span>
-          <span class="hero-highlight-label">Local catalogue</span>
+          <span class="hero-highlight-label">Trinidad &amp; Tobago</span>
         </div>
       </div>
 
       <form id="search-form" class="search-panel">
         <div class="field-wrap">
-          <input id="category-search" type="text" placeholder="Type category (e.g. electronics, tools, vehicle parts...)" autocomplete="off" aria-label="Search by category" />
+          <input id="category-search" type="text" placeholder="Search a category (vehicles, electronics, machinery...)" autocomplete="off" aria-label="Search by category" />
           <div id="category-hint" class="hint-list"></div>
         </div>
         <input id="location-search" type="text" placeholder="Area in Trinidad or Tobago" aria-label="Search by location" />
@@ -139,22 +127,23 @@
 
       <p id="results-note" class="subtle">Loading live marketplace lots...</p>
     </div>
-    <aside class="stats-card hero-sidecard" id="marketplace-pulse">
+
+    <aside class="stats-card hero-sidecard">
       <div>
-        <p class="eyebrow" id="pulse-eyebrow">Live Pulse</p>
-        <h3 id="pulse-title">What is moving right now</h3>
+        <p class="eyebrow">Live Pulse</p>
+        <h3>What is moving right now</h3>
       </div>
-      <div class="pulse-metrics" id="pulse-metrics">
+      <div class="pulse-metrics">
         <p><strong id="stat-live">0</strong> live lots</p>
         <p><strong id="stat-hot">0</strong> hot lots</p>
         <p><strong id="stat-cats">0</strong> categories</p>
       </div>
-      <div class="trust-panel" id="trust-panel">
+      <div class="trust-panel">
         <p class="trust-title">Built for local confidence</p>
         <ul class="plain-list trust-list">
-          <li>Published seller labels and location details appear on each lot</li>
-          <li>Use the reporting route when public lot information needs review</li>
-          <li>Browse and lot records are designed for mobile screens</li>
+          <li>Every lot shows price, end time, seller label, and location</li>
+          <li>Sign in to bid, watch, and get outbid alerts</li>
+          <li>Report any lot that needs review in one tap</li>
         </ul>
       </div>
     </aside>
@@ -173,92 +162,89 @@
       </div>
     </section>
 
-    <section id="spotlight-section">
-      <h2>Spotlight Lots</h2>
-      <div id="spotlight-grid" class="lot-grid lot-grid-3"></div>
-    </section>
+    <div class="home-shell">
+      <div class="home-main-col">
+        <section class="major-band" id="major-section" hidden aria-labelledby="major-title">
+          <div class="section-row">
+            <div>
+              <p class="eyebrow text-pink">Major purchases</p>
+              <h2 id="major-title">Big-ticket lots closing soon</h2>
+            </div>
+            <a class="btn ghost btn-sm" href="./browse.html">See all</a>
+          </div>
+          <div id="major-grid" class="major-grid"></div>
+        </section>
 
-    <section id="marketplace-section">
-      <h2>Marketplace</h2>
-      <div id="lot-grid" class="lot-grid"></div>
-    </section>
+        <section id="marketplace-section" aria-labelledby="marketplace-title">
+          <div class="section-row">
+            <h2 id="marketplace-title">The Marketplace</h2>
+          </div>
+          <div class="sort-bar" id="sort-bar" role="group" aria-label="Sort lots">
+            <span class="sort-label">Sort:</span>
+            <div class="seg">
+              <button type="button" data-sort="ending" class="is-active">Ending soon</button>
+              <button type="button" data-sort="price-high">Price: high</button>
+              <button type="button" data-sort="price-low">Price: low</button>
+              <button type="button" data-sort="hot">Most bids</button>
+            </div>
+          </div>
+          <div id="lot-grid" class="lot-grid"></div>
+        </section>
 
-    <section class="feature-band" aria-labelledby="feature-band-title">
-      <div class="feature-band-header">
-        <p class="eyebrow">Why It Feels Better</p>
-        <h2 id="feature-band-title">Auction browsing with less friction</h2>
+        <section class="feature-band" aria-labelledby="feature-band-title">
+          <div class="feature-band-header">
+            <p class="eyebrow">Why it feels better</p>
+            <h2 id="feature-band-title">Auction browsing with less friction</h2>
+          </div>
+          <div class="feature-band-grid">
+            <article class="feature-card">
+              <p class="chip chip-red">Hot lots</p>
+              <h3>Instant bids, live prices</h3>
+              <p class="subtle">Place a bid without leaving the card. Prices update instantly and you're notified the moment you're outbid.</p>
+            </article>
+            <article class="feature-card">
+              <p class="chip chip-cyan">Buyer-ready</p>
+              <h3>Built for your phone</h3>
+              <p class="subtle">Search, browse, and bid on any screen. Sort by ending time, price, or most-contested lots.</p>
+            </article>
+            <article class="feature-card">
+              <p class="chip chip-green">Trust &amp; safety</p>
+              <h3>Verified sellers, clear records</h3>
+              <p class="subtle">Seller labels, location, and a one-tap report link on every lot help you buy with confidence.</p>
+            </article>
+          </div>
+        </section>
       </div>
-      <div class="feature-band-grid">
-        <article class="feature-card">
-          <p class="chip chip-red">Hot lots</p>
-          <h3>See the details that are published</h3>
-          <p class="subtle">Lot cards show the published price, end time, seller label, and location when inventory is available.</p>
-        </article>
-        <article class="feature-card">
-          <p class="chip">Buyer-ready</p>
-          <h3>Mobile browsing stays usable</h3>
-          <p class="subtle">Search, browse, and lot-detail views are designed to work cleanly on small screens.</p>
-        </article>
-        <article class="feature-card">
-          <p class="chip chip-green">Lot review</p>
-          <h3>Report public information that needs review</h3>
-          <p class="subtle">Published seller labels, region details, and reporting links help buyers review each visible lot carefully.</p>
-        </article>
-      </div>
-    </section>
+
+      <aside class="home-feed-col">
+        <div class="activity-feed">
+          <div class="activity-head">
+            <h3><span class="live-dot"></span> Live activity</h3>
+            <span class="chip chip-live">Real-time</span>
+          </div>
+          <div class="activity-list" id="activity-list"></div>
+        </div>
+      </aside>
+    </div>
 
     <section class="page-intro" aria-labelledby="why-dealztt">
       <h2 id="why-dealztt">Why buyers and sellers use DealzTT</h2>
       <p>
-        DealzTT helps people across Trinidad &amp; Tobago discover local auction lots, compare categories quickly,
-        and review published inventory in one place. From electronics and tools to vehicle-related inventory and household items,
-        the platform is being prepared for category-based discovery before auction actions are enabled.
+        DealzTT helps people across Trinidad &amp; Tobago discover local auction lots — from repossessed vehicles and heavy
+        machinery to liquidation stock, electronics, and home &amp; business equipment — and bid on them in one clean place.
+        No reserves, transparent fees, and a format designed for local buyers and sellers.
       </p>
     </section>
   </main>
 
-  <template id="lot-card-template">
-    <article class="lot-card">
-      <img class="lot-image" alt="Lot image" />
-      <div class="lot-content">
-        <p class="chip lot-category"></p>
-        <h3 class="lot-title"></h3>
-        <p class="subtle lot-seller"></p>
-        <div class="lot-row">
-          <strong class="lot-price"></strong>
-          <span class="subtle lot-bids"></span>
-        </div>
-        <p class="timer lot-time"></p>
-        <p class="subtle lot-location"></p>
-        <div class="lot-badges"></div>
-
-        <div class="lot-actions">
-          <form class="bid-form inline-form">
-            <input class="bidder-name" type="text" placeholder="Bidder" aria-label="Bidder name" required />
-            <input class="bid-amount" type="number" min="1" step="1" placeholder="Amount" aria-label="Bid amount" required />
-            <button class="btn" type="submit">Bid</button>
-          </form>
-
-          <form class="watch-form inline-form">
-            <input class="watch-email" type="email" placeholder="Email watchlist" aria-label="Watchlist email" required />
-            <button class="btn ghost" type="submit">Watch</button>
-          </form>
-
-          <button class="btn ghost pay-now" type="button">Pay Deposit (Fygaro)</button>
-          <button class="btn ghost" type="button" disabled style="opacity:0.5;cursor:not-allowed">TTPay (Coming Soon)</button>
-
-          <p class="subtle lot-message"></p>
-        </div>
-      </div>
-    </article>
-  </template>
-
   <footer class="site-footer">
-    <p>DealzTT &mdash; Trinidad & Tobago's local auction marketplace. <a href="./browse.html">Browse</a> <a href="./how-it-works.html">How It Works</a> Powered by <a href="https://sovdigitalgroup.com" target="_blank" rel="noreferrer">SOV Digital Group</a>.</p>
+    <p>DealzTT &mdash; Trinidad &amp; Tobago's local auction marketplace. <a href="./browse.html">Browse</a> <a href="./how-it-works.html">How It Works</a> <a href="./sell.html">Sell</a> <a href="./feedback.html">Contact</a> Powered by <a href="https://sovdigitalgroup.com" target="_blank" rel="noreferrer">SOV Digital Group</a>.</p>
   </footer>
 
+  <script src="./js/demo-data.js"></script>
   <script src="./js/api.js"></script>
   <script src="./js/common.js"></script>
+  <script src="./js/lot-card.js"></script>
   <script src="./js/home.js"></script>
 </body>
 </html>
