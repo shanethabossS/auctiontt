@@ -1648,6 +1648,20 @@ h1, h2, h3, h4 { letter-spacing: -.035em; }
   .hero { padding: 23px; border-radius: 11px; }
   .hero h1 { font-size: 34px; }
   .search-panel input, .search-panel select { font-size: 16px; }
+  .home-shell { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+  .home-shell > * { min-width: 0; }
+  .home-main-col { min-width: 0; }
+}
+@media (max-width: 420px) {
+  .sort-bar { align-items: flex-start; }
+  .sort-bar .seg {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    flex: 1 1 0;
+    min-width: 0;
+    border-radius: 12px;
+  }
+  .sort-bar .seg button { min-width: 0; padding: 7px 8px; white-space: normal; line-height: 1.2; }
 }
 @media (prefers-reduced-motion: reduce) {
   .btn, .card, .lot-card { transition: none; }
