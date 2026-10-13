@@ -1652,3 +1652,54 @@ h1, h2, h3, h4 { letter-spacing: -.035em; }
 @media (prefers-reduced-motion: reduce) {
   .btn, .card, .lot-card { transition: none; }
 }
+
+/* DealzTT auction cards: clear lot imagery, current price and closing time. */
+.lot-card {
+  border-color: rgba(196, 162, 225, 0.18);
+  border-radius: 12px;
+  background: #12121f;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+  transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
+}
+.lot-card:hover {
+  border-color: rgba(196, 162, 225, 0.48);
+  background: #17172a;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.28);
+  transform: translateY(-2px);
+}
+.lot-image {
+  height: clamp(190px, 22vw, 260px);
+  border-bottom-color: rgba(196, 162, 225, 0.18);
+  background: #17172a;
+  transition: transform 220ms ease;
+}
+.lot-card:hover .lot-image { transform: scale(1.015); }
+.lot-content { gap: 9px; padding: 16px; }
+.lot-content .chip { border-radius: 5px; text-shadow: none; }
+.lot-title { font-size: clamp(1.02rem, 1.4vw, 1.2rem); line-height: 1.28; letter-spacing: -0.025em; }
+.lot-title-link:hover { color: #d9c1eb; }
+.lot-seller, .lot-location { color: #b2b0bf; }
+.lot-row { align-items: center; padding-top: 9px; border-top: 1px solid rgba(196, 162, 225, 0.16); }
+.lot-price { color: #d2b8e6; font-size: clamp(1.28rem, 2vw, 1.55rem); letter-spacing: -0.03em; text-shadow: none; font-variant-numeric: tabular-nums; }
+.lot-bids { color: #c3bfce; font-variant-numeric: tabular-nums; }
+.lot-time {
+  width: fit-content;
+  padding: 4px 8px;
+  border: 1px solid rgba(74, 222, 128, 0.24);
+  border-radius: 5px;
+  background: rgba(16, 185, 129, 0.08);
+  color: #86d8a9;
+  font-variant-numeric: tabular-nums;
+}
+.lot-time.urgent { border-color: rgba(248, 113, 113, 0.26); background: rgba(239, 68, 68, 0.1); color: #ffaaaa; text-shadow: none; animation: none; }
+.lot-time.ending { border-color: rgba(196, 162, 225, 0.28); background: rgba(196, 162, 225, 0.1); color: #d8bce9; text-shadow: none; }
+.lot-actions { border-color: rgba(196, 162, 225, 0.14); }
+.lot-card :focus-visible,
+.sort-bar button:focus-visible,
+.btn:focus-visible { outline: 3px solid #d2b8e6; outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lot-card, .lot-card *, .lot-card *::before, .lot-card *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+  .lot-card:hover { transform: none; }
+  .lot-card:hover .lot-image { transform: none; }
+}
