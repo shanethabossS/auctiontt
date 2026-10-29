@@ -3,8 +3,8 @@
   try { if (sessionStorage.getItem('sov_bank_notice_dismissed') === 'v1') return; } catch (e) { /* storage blocked */ }
   var bar = document.createElement('div');
   bar.setAttribute('role', 'status');
-  bar.style.cssText = 'position:relative;display:flex;justify-content:center;align-items:center;gap:8px;padding:8px 44px 8px 14px;background:#0b3b2e;color:#fff;font:600 13px/1.35 system-ui,sans-serif;text-align:center';
-  bar.innerHTML = '<span>Online card payments are coming soon. For now you can pay by bank transfer.</span><a href="/pay-by-bank.html" style="color:#fff;text-decoration:underline;white-space:nowrap">How to pay</a><button type="button" aria-label="Dismiss payment notice" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);width:24px;height:24px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(255,255,255,.14);color:#fff;cursor:pointer">x</button>';
+  bar.style.cssText = 'position:relative;display:flex;justify-content:center;align-items:center;gap:8px;padding:8px 44px 8px 14px;background:#fde047;color:#1a1a1a;border-bottom:2px solid #d97706;font:700 14px/1.35 system-ui,sans-serif;text-align:center';
+  bar.innerHTML = '<span><strong style="color:#b91c1c">CARD PAYMENTS: COMING SOON.</strong> For now, <strong style="color:#065f46">pay by bank transfer</strong>.</span><a href="/pay-by-bank.html" style="color:#1d4ed8;font-weight:800;text-decoration:underline;white-space:nowrap">How to pay</a><button type="button" aria-label="Dismiss payment notice" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);width:24px;height:24px;border:1px solid rgba(0,0,0,.45);border-radius:999px;background:rgba(0,0,0,.08);color:#1a1a1a;cursor:pointer">x</button>';
   bar.querySelector('button').onclick = function () { try { sessionStorage.setItem('sov_bank_notice_dismissed', 'v1'); } catch (e) { /* storage blocked */ } bar.remove(); };
   document.body.insertBefore(bar, document.body.firstChild);
 })();
