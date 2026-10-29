@@ -1717,3 +1717,12 @@ h1, h2, h3, h4 { letter-spacing: -.035em; }
   .lot-card:hover { transform: none; }
   .lot-card:hover .lot-image { transform: none; }
 }
+
+/* Centered top nav (2026-10-29): brand left, links centred, hamburger below 760px */
+@media (min-width: 760px) {
+  .site-header { display: grid; grid-template-columns: 1fr auto 1fr; justify-items: start; }
+  .site-header nav { flex: 0 1 auto; justify-self: center; justify-content: center; overflow: visible; }
+}
+@media (min-width: 760px) and (max-width: 979px) {
+  .site-header nav a { padding: 7px 8px; font-size: 0.82rem; }
+}
