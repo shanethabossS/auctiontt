@@ -78,13 +78,14 @@ function buildLotCard(lot, opts = {}) {
 
   content.append(category, title, seller, row, time, location);
 
-  if (withBid && window.AuctionUi.timeLeft(lot.ends_at) !== "Ended") {
+  const sampleOnly = lot.is_demo && !window.DEALZTT_DEMO_MODE; // labelled samples cannot be bid on
+  if (withBid && !sampleOnly && window.AuctionUi.timeLeft(lot.ends_at) !== "Ended") {
     const block = document.createElement("div");
     block.className = "bid-block";
     const form = document.createElement("form");
     form.className = "bid-inline js-bid-form";
     const floor = Number(lot.current_bid || lot.starting_bid || 0);
-    const minNext = floor + window.AuctionApi.minIncrement(floor);
+    const minNext = lot.min_next || floor + window.AuctionApi.minIncrement(floor);
     form.innerHTML = `
       <input type="number" class="js-bid-amount" min="${minNext}" step="1"
              placeholder="${minNext.toLocaleString("en-TT")}+" aria-label="Your bid (TTD)" />

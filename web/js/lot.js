@@ -69,9 +69,13 @@ function renderBidPanel(lot) {
     bidPanel.innerHTML = `<div class="bid-locked">This auction has ended. <a class="btn btn-sm" href="./browse.html">Browse live lots</a></div>`;
     return;
   }
+  if (lot.is_demo && !window.DEALZTT_DEMO_MODE) {
+    bidPanel.innerHTML = `<div class="bid-locked">This is a labelled sample lot, so it cannot be bid on. <a class="btn btn-sm" href="./browse.html">Browse live lots</a></div>`;
+    return;
+  }
   const floor = Number(lot.current_bid || lot.starting_bid || 0);
   const step = incr(floor);
-  const minNext = floor + step;
+  const minNext = lot.min_next || floor + step;
   const signedIn = window.AuctionUi.isSignedIn();
 
   bidPanel.innerHTML = `
