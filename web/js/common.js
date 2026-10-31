@@ -106,6 +106,13 @@ function updateAuthPills() {
     if (signed) {
       pill.textContent = demoUser() ? `${currentUserName()} · Sign out` : "Sign out";
       pill.href = "#signout";
+      if (!demoUser() && !pill.previousElementSibling?.hasAttribute("data-orders-link")) {
+        const link = document.createElement("a");
+        link.href = "./orders.html";
+        link.textContent = "My orders";
+        link.setAttribute("data-orders-link", "");
+        pill.before(link);
+      }
       pill.onclick = (e) => {
         e.preventDefault();
         if (demoUser()) { signOutDemo(); toast("info", "Signed out", "Demo session ended."); setTimeout(() => location.reload(), 500); }
