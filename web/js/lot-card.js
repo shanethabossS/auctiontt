@@ -142,7 +142,7 @@ document.addEventListener("submit", async (event) => {
     window.DealzBadges?.record("bid", { amount: lot.current_bid, clutch });
     announceBid(lot, lot.current_bid);
   } catch (err) {
-    window.AuctionUi.toast("err", "Bid not placed", err.message || "Please try again.");
+    if (!window.AuctionUi.handleGate(err.gate)) window.AuctionUi.toast("err", "Bid not placed", err.message || "Please try again.");
   } finally {
     button.disabled = false;
   }

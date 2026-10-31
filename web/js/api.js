@@ -41,8 +41,61 @@ async function apiFetch(path, options = {}) {
   return response.json();
 }
 
-const LOT_SELECT =
-  "id,title,description,image_url,current_bid,starting_bid,bid_count,is_hot,is_featured,ends_at,city,state,seller_name,seller_verified,category_slug,category_name";
+/* ── Live DealzTT API (central auth) ─────────────────────────────────────
+   Same-origin: vercel.json rewrites /dealztt/* to api.sovdigitalgroup.com/api/dealztt/*, so the
+   HttpOnly sign-in cookie is first-party and page script never touches the token. Money is whole
+   cents on the wire; the pages show dollars. */
+const LIVE_BASE = "/dealztt";
+const CATEGORY_NAMES = {
+  vehicles: "Vehicles", machinery: "Machinery & Equipment", repossessions: "Repossessions",
+  liquidations: "Liquidations", electronics: "Electronics", "home-business": "Home & Business",
+};
+
+async function liveFetch(path, options = {}) {
+  const response = await fetch(`${LIVE_BASE}${path}`, {
+    ...options,
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const error = new Error(data.message || data.error || "The auction service could not complete this request.");
+    error.status = response.status;
+    error.gate = data.gate || null;
+    error.code = data.error || null;
+    throw error;
+  }
+  return data;
+}
+
+/* The sign-in wall: signed-out and not-yet-verified viewers only get the labelled sample lots. */
+function reportWall(gate, hidden) {
+  window.AuctionApi.wall = { gate: gate || null, hidden: Number(hidden || 0) };
+  document.dispatchEvent(new CustomEvent("dealztt:wall", { detail: window.AuctionApi.wall }));
+}
+
+function toUiLot(l) {
+  const current = l.bidCount ? l.currentCents : l.startCents;
+  return {
+    id: l.id,
+    category_slug: l.category,
+    category_name: CATEGORY_NAMES[l.category] || l.category,
+    title: l.title,
+    description: l.description,
+    image_url: (l.images || [])[0] || null,
+    images: l.images || [],
+    starting_bid: l.startCents / 100,
+    current_bid: current / 100,
+    bid_count: l.bidCount,
+    ends_at: l.endsAt,
+    city: l.location || "",
+    state: "",
+    seller_name: "",
+    seller_verified: false,
+    is_demo: /\[demo\]/i.test(l.title),
+    min_next: l.minimumNextBidCents ? l.minimumNextBidCents / 100 : null,
+  };
+}
 
 /* ── Unified data source ──────────────────────────────────────────────────
    In DEMO_MODE the whole experience runs on the sample lots in demo-data.js
@@ -61,19 +114,26 @@ const AuctionData = {
   isDemo: demoMode,
 
   async getCategories() {
-    if (demoMode()) return (window.DEALZTT_CATEGORIES || []).map((c) => ({ ...c }));
-    return apiFetch("/auction_categories?select=slug,name,sort_order&order=sort_order.asc");
+    return (window.DEALZTT_CATEGORIES || []).map((c) => ({ ...c }));
   },
 
   async getLots() {
     if (demoMode()) return demoLots();
-    return apiFetch(`/v_lot_feed?select=${LOT_SELECT}&order=ends_at.asc`);
+    const data = await liveFetch("/lots?limit=50");
+    reportWall(data.gate, data.hidden_total);
+    return (data.lots || []).map(toUiLot);
   },
 
   async getLot(id) {
     if (demoMode()) return demoLots().find((l) => String(l.id) === String(id)) || null;
-    const rows = await apiFetch(`/v_lot_feed?select=${LOT_SELECT}&id=eq.${encodeURIComponent(id)}`);
-    return Array.isArray(rows) ? rows[0] : null;
+    try {
+      const data = await liveFetch(`/lots/${encodeURIComponent(id)}`);
+      return data.lot ? toUiLot(data.lot) : null;
+    } catch (error) {
+      if (error.gate) { reportWall(error.gate, 1); return null; } // a real lot behind the wall
+      if (error.status === 404) return null;
+      throw error;
+    }
   },
 
   /* Place a bid. Demo: mutate in-memory + return the new state instantly.
@@ -94,17 +154,24 @@ const AuctionData = {
       return { ok: true, lot: { ...lot }, min_next: value + minIncrement(value) };
     }
 
-    return apiFetch("/bids/place", { method: "POST", body: JSON.stringify({ lot_id: id, amount: value }) });
+    const outcome = await liveFetch(`/lots/${encodeURIComponent(id)}/bids`, {
+      method: "POST",
+      body: JSON.stringify({ amount_cents: Math.round(value * 100), idempotency_key: (crypto.randomUUID && crypto.randomUUID()) || String(Date.now()) + Math.random() }),
+    });
+    const lot = toUiLot(outcome.lot);
+    return { ok: true, lot, leading: outcome.leading, extended: outcome.extended, min_next: lot.min_next };
   },
 };
 
-/* Suggested minimum bid increment, scaled to price. */
+/* Smallest raise the server accepts, by price band (matches /api/dealztt/rules). */
 function minIncrement(price) {
-  if (price >= 100000) return 2500;
-  if (price >= 20000) return 1000;
-  if (price >= 5000) return 250;
-  if (price >= 1000) return 100;
-  return 25;
+  if (price < 100) return 5;
+  if (price < 500) return 10;
+  if (price < 1000) return 25;
+  if (price < 5000) return 50;
+  if (price < 25000) return 100;
+  if (price < 100000) return 250;
+  return 500;
 }
 
-window.AuctionApi = { apiFetch, AuctionData, minIncrement };
+window.AuctionApi = { apiFetch, liveFetch, AuctionData, minIncrement, categoryNames: CATEGORY_NAMES, wall: { gate: null, hidden: 0 } };

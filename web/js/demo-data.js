@@ -10,7 +10,7 @@
    renders nothing invented — matching SPEC.md truthfulness rules.
    =========================================================================== */
 
-window.DEALZTT_DEMO_MODE = true;
+window.DEALZTT_DEMO_MODE = false;
 
 /* --- Canonical category taxonomy (shared shape for all SOV sites) ----------
    6 top-level auction categories. Vehicles + Machinery are the high-value fee

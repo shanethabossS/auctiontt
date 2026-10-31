@@ -157,7 +157,7 @@ async function placeViewerBid(lot, amount, opts = {}) {
   try {
     const result = await window.AuctionApi.AuctionData.placeBid(lot.id, amount);
     Object.assign(lot, result.lot);
-    viewerWinning = true;
+    viewerWinning = result.leading !== false;
     const clutch = new Date(lot.ends_at).getTime() - window.AuctionUi.nowMs() < 120000;
     pushHistory({ name: "You", you: true, amount: lot.current_bid, at: window.AuctionUi.nowMs() });
     priceNode.textContent = fmtMoney(lot.current_bid);
@@ -169,7 +169,7 @@ async function placeViewerBid(lot, amount, opts = {}) {
     document.dispatchEvent(new CustomEvent("dealztt:bid", { detail: { lot: lot.title, amount: lot.current_bid, who: window.AuctionUi.currentUserName() } }));
     scheduleRival(lot);
   } catch (err) {
-    window.AuctionUi.toast("err", "Bid not placed", err.message || "Please try again.");
+    if (!window.AuctionUi.handleGate(err.gate)) window.AuctionUi.toast("err", "Bid not placed", err.message || "Please try again.");
   }
 }
 

@@ -64,12 +64,12 @@
       <div class="section-row"><h2 id="how-sell">How selling works</h2></div>
       <div class="sell-steps">
         <article class="sell-step">
-          <h3>Submit your inventory</h3>
-          <p>Send us the item(s) with title, location, condition, known defects, ownership/transfer status, opening-price guidance, and clear photos. Start a consignment enquiry below — no payment or ID documents needed at this stage.</p>
+          <h3>List your item</h3>
+          <p>Sign in with SOV ID, submit your ID there once, then list the item below with a title, category, condition and known defects, ownership/transfer status, a starting price and clear photos.</p>
         </article>
         <article class="sell-step">
-          <h3>We review &amp; schedule</h3>
-          <p>DealzTT reviews the consignment, confirms fee terms, and schedules the auction. Vehicles and machinery may need extra condition and document detail before going live.</p>
+          <h3>Pay the listing fee</h3>
+          <p>Pay TT$40 by bank transfer using your reference. When we confirm it, your auction goes live for 7 days. Vehicles and machinery may be asked for extra condition and document detail, and DealzTT can take down anything that breaks the rules.</p>
         </article>
         <article class="sell-step">
           <h3>Auction runs &amp; you get paid</h3>
@@ -99,20 +99,37 @@
       </div>
     </section>
 
-    <section class="card" style="margin-top:30px;">
-      <h2>Start a consignment enquiry</h2>
-      <p class="subtle">Tell us what you'd like to sell and we'll come back with fee terms and next steps. Do not send payment details, identity documents, or full vehicle identification numbers through the form.</p>
+    <section class="card" style="margin-top:30px;" id="list-section">
+      <h2>List an item</h2>
+      <p class="subtle">Members with a submitted ID can list an item for a 7-day no-reserve auction. A listing costs TT$40, paid by bank transfer; it goes live as soon as we confirm the payment. Photos need a web link for now (https://).</p>
+      <div id="list-item" style="margin-top:14px;"><p class="subtle">Checking your account…</p></div>
+      <form id="list-form" hidden>
+        <label>Title<input type="text" name="title" required minlength="3" maxlength="120" placeholder="e.g. 2018 Toyota Hilux 2.4L 4x4" /></label>
+        <label>Category<select name="category" required></select></label>
+        <label>Description<textarea name="description" rows="5" maxlength="5000" placeholder="Condition, known defects, ownership and transfer status, where it can be collected"></textarea></label>
+        <label>Starting price (TT$)<input type="number" name="start" required min="1" step="1" inputmode="numeric" /></label>
+        <label>Location<input type="text" name="location" maxlength="120" placeholder="e.g. Chaguanas" /></label>
+        <label>Bidding style<select name="mode"><option value="manual">Manual bids</option><option value="proxy">Proxy bidding (bidders set a maximum)</option></select></label>
+        <label>Photo links, one per line (https://)<textarea name="photos" rows="3" placeholder="https://..."></textarea></label>
+        <button class="btn" type="submit">Continue to payment</button>
+      </form>
+      <p id="list-status" class="subtle" role="status" hidden></p>
       <div class="launch-state-actions" style="margin-top:14px;">
-        <a class="btn" href="./feedback.html">Submit inventory for review</a>
-        <a class="btn ghost" href="./fees.html">See fee calculator</a>
+        <a class="btn ghost" href="./pricing.html">See pricing</a>
+        <a class="btn ghost" href="./feedback.html">Ask us a question</a>
       </div>
-      <p class="subtle" style="margin-top:12px;"><span class="coming-next">Full online consignment upload &amp; scheduling is rolling out with auction operations. For now, enquiries come through the contact form and our team follows up directly.</span></p>
+    </section>
+
+    <section class="card" style="margin-top:30px;" id="my-lots" hidden>
+      <h2>Your listings</h2>
+      <ul id="my-lots-list" style="display:grid;gap:10px;padding-left:18px;"></ul>
     </section>
   </main>
 
   <footer class="site-footer"><p><a href="./browse.html">Browse</a> <a href="./how-it-works.html">How It Works</a> <a href="./fees.html">Fees</a> <a href="./feedback.html">Contact</a> Powered by <a href="https://sovdigitalgroup.com" target="_blank" rel="noreferrer">Sovereign Digital Solutions Limited</a>.</p><div style="display:flex;flex-wrap:wrap;justify-content:center;gap:16px;padding:16px;font-size:13px"><span>Company support</span><a href="tel:+18682593200">868-259-3200</a><a href="https://wa.me/18682593200" target="_blank" rel="noopener noreferrer">WhatsApp</a></div></footer>
   <script src="./js/api.js"></script>
   <script src="./js/common.js"></script>
+  <script src="./js/sell.js"></script>
 <script src="./js/bank-notice.js" defer></script>
 <script src="./js/founding-banner.js" defer></script>
 <script src="/js/sov-network-bar.js" data-site="dealztt" defer></script></body>

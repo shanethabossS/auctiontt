@@ -1,6 +1,8 @@
 let serverOffsetMs = 0;
 
 const SSO_URL = "https://id.sovdigitalgroup.com/";
+const SSO_HUB = "https://id.sovdigitalgroup.com";
+const VERIFY_URL = "https://id.sovdigitalgroup.com/dashboard";
 const DEMO_USER_KEY = "dealztt_demo_user";
 const RETURN_KEY = "dealztt_return";
 
@@ -8,7 +10,13 @@ const RETURN_KEY = "dealztt_return";
    The `next` param is the ecosystem convention; we also stash the URL locally
    so we can bounce back even if the hub only returns to the site root. */
 function signInHref() {
-  return `${SSO_URL}?next=${encodeURIComponent(location.href)}`;
+  const callback = new URL("/sso/callback", location.origin);
+  callback.searchParams.set("next", location.pathname + location.search);
+  return `${SSO_HUB}/sso?app=dealztt&return=${encodeURIComponent(callback.toString())}`;
+}
+async function signOut() {
+  try { await fetch("/dealztt-api/signout", { method: "POST", credentials: "same-origin" }); } catch {}
+  location.reload();
 }
 function rememberReturn() {
   try { localStorage.setItem(RETURN_KEY, JSON.stringify({ url: location.href, at: Date.now() })); } catch {}
@@ -96,11 +104,13 @@ function updateAuthPills() {
   const signed = isSignedIn();
   pills.forEach((pill) => {
     if (signed) {
-      pill.textContent = demoUser() ? `${currentUserName()} · Sign out` : "My Account";
-      pill.href = demoUser() ? "#signout" : SSO_URL;
-      if (demoUser()) {
-        pill.onclick = (e) => { e.preventDefault(); signOutDemo(); toast("info", "Signed out", "Demo session ended."); setTimeout(() => location.reload(), 500); };
-      }
+      pill.textContent = demoUser() ? `${currentUserName()} · Sign out` : "Sign out";
+      pill.href = "#signout";
+      pill.onclick = (e) => {
+        e.preventDefault();
+        if (demoUser()) { signOutDemo(); toast("info", "Signed out", "Demo session ended."); setTimeout(() => location.reload(), 500); }
+        else signOut();
+      };
     } else {
       pill.textContent = "Sign In";
       pill.href = signInHref();
@@ -175,6 +185,51 @@ function openSignInGate(actionLabel) {
   });
 }
 
+/* A server refusal that names a gate: sign in first, or finish ID verification. */
+function handleGate(gate) {
+  if (gate === "signin") { openSignInGate("continue"); return true; }
+  if (gate !== "verify") return false;
+  closeSignInGate();
+  const overlay = document.createElement("div");
+  overlay.id = "gate-overlay";
+  overlay.className = "gate-overlay";
+  overlay.innerHTML = `
+    <div class="gate-card" role="dialog" aria-modal="true" aria-label="Verify your ID">
+      <div class="gate-emoji">🪪</div>
+      <h3>Verify your ID to continue</h3>
+      <p>Bidding and selling are open to members who have submitted their ID in SOV ID. It takes a few minutes.</p>
+      <div class="gate-actions">
+        <a class="btn" href="${VERIFY_URL}">Verify my ID</a>
+        <button class="btn ghost" id="gate-cancel" type="button">Not now</button>
+      </div>
+    </div>`;
+  overlay.addEventListener("click", (e) => { if (e.target === overlay) closeSignInGate(); });
+  document.body.appendChild(overlay);
+  document.getElementById("gate-cancel")?.addEventListener("click", closeSignInGate);
+  return true;
+}
+
+/* The wall notice: shown above the lots when the server held real lots back. */
+document.addEventListener("dealztt:wall", (event) => {
+  document.getElementById("wall-banner")?.remove();
+  const gate = event.detail && event.detail.gate;
+  const main = document.querySelector("main");
+  if (!gate || !main) return;
+  const box = document.createElement("section");
+  box.id = "wall-banner";
+  box.className = "card";
+  box.style.marginBottom = "18px";
+  box.innerHTML = gate === "signin"
+    ? `<h2>Sign in to see live auctions</h2>
+       <p class="subtle">Live lots, prices and bidding are for signed-in members with a submitted ID. The sample lots show how an auction looks.</p>
+       <div class="launch-state-actions" style="margin-top:12px;"><a class="btn" id="wall-signin" href="${signInHref()}">Sign in with SOV ID</a></div>`
+    : `<h2>One step left: verify your ID</h2>
+       <p class="subtle">You are signed in. Live lots, prices and bidding open as soon as your ID is submitted in SOV ID.</p>
+       <div class="launch-state-actions" style="margin-top:12px;"><a class="btn" href="${VERIFY_URL}">Verify my ID</a></div>`;
+  main.prepend(box);
+  document.getElementById("wall-signin")?.addEventListener("click", rememberReturn);
+});
+
 function initMobileNav() {
   const toggle = document.getElementById("nav-toggle");
   const drawer = document.getElementById("nav-mobile");
@@ -213,6 +268,9 @@ window.AuctionUi = {
   initMobileNav,
   isSignedIn,
   requireSignIn,
+  signInHref,
+  handleGate,
+  signOut,
   currentUserName,
   toast,
 };

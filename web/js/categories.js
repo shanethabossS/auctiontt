@@ -47,7 +47,7 @@ input.addEventListener("input", () => {
 (async () => {
   window.AuctionUi.updateAuthPills();
   try {
-    all = await window.AuctionApi.apiFetch("/auction_categories?select=slug,name,sort_order&order=sort_order.asc");
+    all = await window.AuctionApi.AuctionData.getCategories();
     renderSuggestions(all);
     render(all);
   } catch {

@@ -1726,3 +1726,9 @@ h1, h2, h3, h4 { letter-spacing: -.035em; }
 @media (min-width: 760px) and (max-width: 979px) {
   .site-header nav a { padding: 7px 8px; font-size: 0.82rem; }
 }
+
+/* Sell page: listing form and the held-back lots notice */
+#list-form { display: grid; gap: 12px; margin-top: 14px; }
+#list-form[hidden] { display: none; }
+#list-form label { display: grid; gap: 6px; font-weight: 600; }
+#wall-banner h2 { margin: 0 0 6px; }

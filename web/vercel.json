@@ -38,6 +38,18 @@
   ],
   "rewrites": [
     {
+      "source": "/dealztt-api/:path*",
+      "destination": "https://api.sovdigitalgroup.com/api/dealztt-pay/:path*"
+    },
+    {
+      "source": "/dealztt/:path*",
+      "destination": "https://api.sovdigitalgroup.com/api/dealztt/:path*"
+    },
+    {
+      "source": "/sso/callback",
+      "destination": "/sso-callback.html"
+    },
+    {
       "source": "/postgrest/(.*)",
       "destination": "https://api.sovdigitalgroup.com/auction/$1"
     },
